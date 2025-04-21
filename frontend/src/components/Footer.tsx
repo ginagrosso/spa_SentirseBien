@@ -5,7 +5,7 @@ import { Facebook, Instagram } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#bac4e0] text-[#536a86] py-10 font-roboto">
+    <footer className="bg-[#b6c454] text-[#f6fedb] py-10 font-roboto">
       <div className="max-w-6xl mx-auto px-4">
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left items-start">
@@ -54,5 +54,3 @@ export default function Footer() {
     </footer>
   );
 }
-
-
