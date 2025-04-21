@@ -21,7 +21,7 @@ export default function ReservaTurno() {
 
   return (
     <section className="py-6 px-2 bg-white">
-      <div className="max-w-xl mx-auto text-center">
+      <div className="max-w-xl mx-auto text-center bg-[#bac4e0] p-6 rounded-xl shadow-md w-full max-w-lg text-[#536a86]">
         <form className="space-y-4 text-left">
           <input
             type="text"
