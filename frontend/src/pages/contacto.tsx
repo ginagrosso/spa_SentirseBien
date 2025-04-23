@@ -47,7 +47,7 @@ export default function Contacto() {
             <p><strong>Dirección:</strong> Av. Bienestar 1234, Buenos Aires</p>
             <p><strong>Horarios:</strong> Lunes a Viernes de 9 a 18 hs</p>
             <a
-                href="https://wa.me/5493482678983"
+                href="https://wa.me/*************"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block mt-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
