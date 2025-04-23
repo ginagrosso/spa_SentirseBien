@@ -20,8 +20,8 @@ export default function ReservaTurno() {
   };
 
   return (
-    <section className="py-6 px-2 bg-[#f6fedb] font-roboto">
-      <div className="max-w-xl mx-auto text-center bg-[#b6c454] p-6 rounded-xl shadow-md w-full max-w-lg text-[#536a86]">
+    <section className="py-6 px-2 bg-[#f0f8ff] font-roboto">
+      <div className="max-w-xl mx-auto text-center bg-[#B6D5C8] p-6 rounded-xl shadow-md w-full max-w-lg text-[#436E6C]">
         <form className="space-y-4 text-left">
           <input
             type="text"
@@ -29,7 +29,7 @@ export default function ReservaTurno() {
             placeholder="Nombre completo"
             value={form.nombre}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-[#b6c454] rounded-md text-[#536a86] focus:outline-none focus:ring-2 focus:ring-[#b6c454]"
+            className="w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6C] focus:outline-none focus:ring-2 focus:ring-[#B6D5C8]"
           />
 
           <input
@@ -38,14 +38,14 @@ export default function ReservaTurno() {
             placeholder="Correo electrónico"
             value={form.email}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-[#b6c454] rounded-md text-[#536a86] focus:outline-none focus:ring-2 focus:ring-[#b6c454]"
+            className="w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6C] focus:outline-none focus:ring-2 focus:ring-[#B6D5C8]"
           />
 
           <select
             name="servicio"
             value={form.servicio}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-[#b6c454] rounded-md text-[#536a86] bg-white"
+            className="w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6C] bg-white"
           >
             <option value="">Seleccioná un servicio</option>
             {servicios.map((s) => (
@@ -57,7 +57,7 @@ export default function ReservaTurno() {
             name="dia"
             value={form.dia}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-[#b6c454] rounded-md text-[#536a86] bg-white"
+            className="w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6C] bg-white"
           >
             <option value="">Seleccioná un día</option>
             {dias.map((d) => (
@@ -69,7 +69,7 @@ export default function ReservaTurno() {
             name="horario"
             value={form.horario}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-[#b6c454] rounded-md text-[#536a86] bg-white"
+            className="w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6C] bg-white"
           >
             <option value="">Seleccioná un horario</option>
             {horarios.map((h) => (
@@ -79,8 +79,7 @@ export default function ReservaTurno() {
 
           <button
             type="submit"
-            className="w-full bg-[#536a86] text-white py-2 rounded-md hover:bg-[#40576d] transition"
-          >
+            className="w-full bg-[#436E6C] text-white py-2 rounded-md hover:bg-[#5A9A98] transition">
             Confirmar turno
           </button>
         </form>

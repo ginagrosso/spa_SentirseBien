@@ -5,7 +5,7 @@ import { CalendarDays, Search, User } from 'lucide-react';
 
 export default function Header() {
   return (
-    <header className="bg-[#b6c454] shadow-sm text-[#f6fedb] font-roboto">
+    <header className="bg-[#436E6C] shadow-sm text-[#F5F9F8] font-roboto">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         
         <div className="flex items-center gap-2">
@@ -22,9 +22,11 @@ export default function Header() {
 
         <div className="flex items-center gap-6">
           <nav className="flex gap-6 text-sm font-medium">
-            <a href="" className="hover:underline">INICIO</a>
+            <a href="#" className="hover:underline">INICIO</a>
+            <a href="#servicios" className="hover:underline">SERVICIOS</a>
+            <a href="#conocenos" className="hover:underline">NOSOTROS</a>
             <a href="#turnos" className="hover:underline">MIS TURNOS</a>
-            <a href="contacto" className="hover:underline">CONTACTO</a>
+            <a href="#contacto" className="hover:underline">CONTACTO</a>
           </nav>
 
           <div className="flex items-center gap-4">
