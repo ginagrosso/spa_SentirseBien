@@ -22,11 +22,11 @@ export default function Header() {
 
         <div className="flex items-center gap-6">
           <nav className="flex gap-6 text-sm font-medium">
-            <a href="#" className="hover:underline">INICIO</a>
-            <a href="#servicios" className="hover:underline">SERVICIOS</a>
-            <a href="#conocenos" className="hover:underline">NOSOTROS</a>
-            <a href="#turnos" className="hover:underline">MIS TURNOS</a>
-            <a href="#contacto" className="hover:underline">CONTACTO</a>
+            <a href="/" className="hover:underline">INICIO</a>
+            <a href="servicios" className="hover:underline">SERVICIOS</a>
+            <a href="conocenos" className="hover:underline">NOSOTROS</a>
+            <a href="turnos" className="hover:underline">MIS TURNOS</a>
+            <a href="contacto" className="hover:underline">CONTACTO</a>
           </nav>
 
           <div className="flex items-center gap-4">
