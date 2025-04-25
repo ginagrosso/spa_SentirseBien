@@ -24,10 +24,10 @@ export default function Footer() {
           <div className="flex flex-col items-center">
             <h3 className="text-base font-semibold mb-2">Accesos rápidos</h3>
             <ul className="space-y-1 text-sm">
-              <li><a href="#">Inicio</a></li>
-              <li><a href="#servicios">Servicios</a></li>
-              <li><a href="#turnos">Mis Turnos</a></li>
-              <li><a href="#contacto">Contacto</a></li>
+              <li><a href="/">Inicio</a></li>
+              <li><a href="servicios">Servicios</a></li>
+              <li><a href="turnos">Mis Turnos</a></li>
+              <li><a href="contacto">Contacto</a></li>
             </ul>
           </div>
 
