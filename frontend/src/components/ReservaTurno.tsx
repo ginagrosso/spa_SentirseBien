@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import es from 'date-fns/locale/es';
+import { es } from 'date-fns/locale';
 
 export default function ReservaTurno() {
   const [form, setForm] = useState({
