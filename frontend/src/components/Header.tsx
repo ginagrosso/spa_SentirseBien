@@ -6,16 +6,16 @@ import { CalendarDays, Search, User } from 'lucide-react';
 export default function Header() {
   return (
     <header className="bg-[#436E6C] shadow-sm text-[#F5F9F8] font-roboto">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="container mx-auto px-14 py-1 flex items-center justify-between">
         
         <div className="flex items-center gap-2">
           <Image
             src="/images/logo.png"
             alt="Logo del SPA"
-            width={60}
-            height={60}
+            width={50}
+            height={50}
           />
-          <h1 className="text-4xl font-amiri not-italic">
+          <h1 className="text-2xl font-amiri not-italic">
             SPA <span className="font-light italic">Sentirse Bien</span>
           </h1>
         </div>

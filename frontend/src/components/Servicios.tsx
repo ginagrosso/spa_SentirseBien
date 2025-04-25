@@ -4,6 +4,9 @@ import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+
 
 const treatments = [
   {
@@ -131,6 +134,7 @@ const treatments = [
 
 export default function ServicesPage() {
   const sliderRefs = useRef<HTMLDivElement[]>([]);
+
   const scroll = (idx: number, dir: 'left' | 'right') => {
     const container = sliderRefs.current[idx];
     if (!container) return;
@@ -140,70 +144,81 @@ export default function ServicesPage() {
     const amount = card.offsetWidth + gap;
     container.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
   };
+
   return (
-    <div className="px-4 py-12 bg-[#f0f8ff] font-roboto">
-      {treatments.map((category, index) => (
-        <section key={index} className="mb-12">
-          <h3 className="text-2xl font-semibold text-center mb-6 text-[#536a86]">
-            {category.category}
-          </h3>
+    <>
+  
+      <section className="bg-[#F5F9F8] text-[#436E6C] font-roboto py-16 px-4 text-center">
+        <h1 className="text-4xl font-amiri italic mb-4">Nuestros Servicios</h1>
+        <p className="max-w-3xl mx-auto text-lg">
+          Descubrí todos los tratamientos que <span className="font-semibold">Sentirse Bien</span> tiene para vos.
+        </p>
+      </section>
 
-          <div className="flex items-center justify-center gap-4">
-            <button onClick={() => scroll(index, 'left')} aria-label="Anterior">
-              <ChevronLeft className="w-6 h-6 text-[#536a86] hover:text-[#40576d] transition" />
-            </button>
+      <main className="px-4 py-16 bg-white font-roboto">
+        {treatments.map((category, index) => (
+          <section
+            key={index}
+            id={category.category.replace(/\s+/g, '').toLowerCase()}
+            className="mb-20"
+          >
+            <h3 className="text-3xl font-semibold text-center mb-10 text-[#436E6C]">
+              {category.category}
+            </h3>
 
-            <div
-              className="w-full max-w-[960px] overflow-hidden"
-              ref={(el) => { if (el) sliderRefs.current[index] = el; }}
-            >
-              <div className="flex gap-6">
-                {category.services.map((service, idx) => (
-                  <div
-                    key={idx}
-                    className="
-                      inner-card           /* marcador para medir ancho */
-                      flex-shrink-0 w-[300px]
-                      bg-white p-6 rounded-xl shadow-md
-                      text-[#436E6C] text-center
-                      flex flex-col justify-between
-                    "
-                  >
-                    <div className="flex-grow mb-4">
-                      <Image
-                        src={service.image}
-                        alt={service.name}
-                        width={300}
-                        height={180}
-                        className="rounded-md object-cover mb-4"
-                      />
-                      <h4 className="text-lg font-semibold mb-2">{service.name}</h4>
-                      <p className="text-sm mb-2">{service.price}</p>
-                      <p className="text-sm text-[#40576d] mb-4">
-                        {service.descripcion}
-                      </p>
+            <div className="flex items-center justify-center gap-4">
+              <button onClick={() => scroll(index, 'left')} aria-label="Anterior">
+                <ChevronLeft className="w-6 h-6 text-[#536a86] hover:text-[#40576d] transition" />
+              </button>
+
+              <div
+                className="w-full max-w-[960px] overflow-hidden"
+                ref={(el) => {
+                  if (el) sliderRefs.current[index] = el;
+                }}
+              >
+                <div className="flex gap-6 ">
+                  {category.services.map((service, idx) => (
+                    <div
+                      key={idx}
+                      className="
+                        flex-shrink-0 w-[300px]
+                         bg-[#F5F9F8] p-6 rounded-xl shadow-md
+                        text-[#436E6C] text-center
+                        flex flex-col justify-between
+                      "
+                    >
+                      <div className="flex-grow mb-4">
+                        <Image
+                          src={service.image}
+                          alt={service.name}
+                          width={300}
+                          height={180}
+                          className="rounded-md object-cover mb-4"
+                        />
+                        <h4 className="text-lg font-semibold mb-2">{service.name}</h4>
+                        <p className="text-sm mb-2">{service.price}</p>
+                        <p className="text-sm text-[#40576d]">{service.descripcion}</p>
+                      </div>
+
+                      <Link href="/reserva">
+                        <button className="bg-[#436E6C] text-white px-4 py-2 rounded-full hover:bg-[#5A9A98] transition mt-4">
+                          Reservar turno
+                        </button>
+                      </Link>
                     </div>
-
-                    <Link href="/reserva">
-                      <button className="
-                        bg-[#436E6C] text-white
-                        px-4 py-2 rounded-full
-                        hover:bg-[#5A9A98] transition
-                      ">
-                        Reservar turno
-                      </button>
-                    </Link>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            <button onClick={() => scroll(index, 'right')} aria-label="Siguiente">
-              <ChevronRight className="w-6 h-6 text-[#536a86] hover:text-[#40576d] transition" />
-            </button>
-          </div>
-        </section>
-      ))}
-    </div>
+              <button onClick={() => scroll(index, 'right')} aria-label="Siguiente">
+                <ChevronRight className="w-6 h-6 text-[#536a86] hover:text-[#40576d] transition" />
+              </button>
+            </div>
+          </section>
+        ))}
+      </main>
+
+    </>
   );
 }

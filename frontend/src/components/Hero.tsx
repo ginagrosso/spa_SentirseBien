@@ -2,12 +2,16 @@
 
 export default function Hero() {
   return (
-    <section className="relative h-[60vh] flex items-center justify-center font-roboto text-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/images/hero.png')" }}>
+    <section className="relative h-[70vh] flex items-center justify-center font-roboto text-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/images/hero.png')" }}>
       <div className="absolute inset-0 bg-[#015249]/30 backdrop-blur-sm"></div>      
 
-      <div className="relative z-10 max-w-2xl px-4">
-        <h2 className="text-4xl md:text-5xl font-semibold italic text-white mb-14 md:whitespace-nowrap">
-          Tu refugio de serenidad te espera.</h2>
+      <div className="relative z-10 max-w-3xl px-4 mx-auto text-center">
+        <h2 className="text-4xl md:text-5xl italic font-semibold font-roboto text-white mb-4">
+        Tu refugio de serenidad te espera
+        </h2>
+        <p className="text-white text-lg font-light mb-6">
+          Vive la experiencia de un descanso profundo para el alma.
+        </p>
       </div>
 
       <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0]">

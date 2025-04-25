@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import es from 'date-fns/locale/es';
-
+import { es } from 'date-fns/locale';
+import { registerLocale } from 'react-datepicker';
+import { es as esLocale } from 'date-fns/locale';
+registerLocale('es', esLocale);
 export default function ReservaTurno() {
   const [form, setForm] = useState({
     nombre: '',
@@ -21,7 +23,6 @@ export default function ReservaTurno() {
     e.preventDefault();
     if (form.nombre && form.email && form.servicio && form.fecha && form.horario) {
       try {
-        // Format date for API
         const formattedDate = form.fecha.toISOString().split('T')[0];
 
         const res = await fetch('/api/reservas', {

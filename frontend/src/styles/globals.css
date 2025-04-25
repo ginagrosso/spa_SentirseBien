@@ -3,3 +3,7 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Amiri&family=Roboto&display=swap');
 
+html {
+  scroll-behavior: smooth;
+}
+
