@@ -14,7 +14,19 @@ generator client {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
   password String
+  nombre   String?
+  telefono String?
+}
+
+model reserva {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  email     String
+  servicio  String
+  fecha     String
+  horario   String
+  createdAt DateTime @default(now())
 }

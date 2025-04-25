@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../lib/prisma'; // Asegurate de tener configurado Prisma en tu proyecto
+import { prisma } from 'lib/prisma';
 import bcrypt from 'bcryptjs';
+import { generateToken } from '../../lib/jwt';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -14,23 +15,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Buscar el usuario por email en la base de datos
-    const user = await prisma.user.findUnique({
-      where: { email: email },
-    });
-
-    if (!user) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ error: 'Credenciales incorrectas' });
     }
 
-    // Comparar la contraseña ingresada con la almacenada (se asume que está hasheada)
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Credenciales incorrectas' });
-    }
-    
-    // Login exitoso
-    return res.status(200).json({ mensaje: 'Inicio de sesión exitoso. ¡Bienvenido!' });
+    const token = generateToken({ id: user.id, email: user.email });
+    return res.status(200).json({ mensaje: 'Inicio de sesión exitoso', token });
   } catch (error) {
     console.error('Error en login:', error);
     return res.status(500).json({ error: 'Error en el servidor' });
