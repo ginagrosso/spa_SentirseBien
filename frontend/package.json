@@ -15,6 +15,7 @@
     "framer-motion": "^12.9.1",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.488.0",
+    "mongodb": "^6.16.0",
     "next": "latest",
     "react": "latest",
     "react-datepicker": "^8.3.0",
