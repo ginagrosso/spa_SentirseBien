@@ -21,9 +21,8 @@ export default function Login() {
         });
         const data = await res.json();
         if (res.ok) {
-          setMensaje(data.mensaje);
-          setTipoMensaje('exito');
-          setMostrarModal(true); // Solo se activa para éxito
+          localStorage.setItem('spa-logueado', 'true');
+          setMostrarModal(true);
         } else {
           setMensaje(data.error || 'Error al iniciar sesión.');
           setTipoMensaje('error');
@@ -46,19 +45,23 @@ export default function Login() {
     <>
       <Header />
 
-      <section className="py-12 px-4 bg-white font-roboto">
-        <div className="max-w-xl mx-auto text-center">
-          <h2 className="text-3xl font-semibold text-[#536a86] mb-6">
-            Iniciar sesión
-          </h2>
-          <form className="space-y-4 text-left" onSubmit={handleSubmit}>
+      <section className="bg-[#F5F9F8] text-[#436E6C] font-roboto py-16 px-4 text-center">
+        <h1 className="text-4xl font-amiri italic mb-4">Iniciar sesión</h1>
+        <p className="max-w-3xl mx-auto text-lg">
+          Accedé a tu cuenta para gestionar tus turnos y mantenerte conectada con <span className="font-semibold">Sentirse Bien</span>.
+        </p>
+      </section>
+
+      <main className="bg-white py-16 px-4 font-roboto">
+        <div className="max-w-lg mx-auto bg-[#F5F9F8] p-8 rounded-xl shadow-md text-[#436E6C]">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <input
               type="email"
               name="email"
               placeholder="Correo electrónico"
               value={form.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-[#bac4e0] rounded-md text-[#536a86] focus:outline-none focus:ring-2 focus:ring-[#bac4e0]"
+              className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
             />
             <input
               type="password"
@@ -66,37 +69,37 @@ export default function Login() {
               placeholder="Contraseña"
               value={form.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-[#bac4e0] rounded-md text-[#536a86] focus:outline-none focus:ring-2 focus:ring-[#bac4e0]"
+              className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
             />
             <button
               type="submit"
-              className="w-full bg-[#536a86] text-white py-2 rounded-md hover:bg-[#40576d] transition"
+              className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition"
             >
               Ingresar
             </button>
             {tipoMensaje === 'error' && mensaje && (
-              <div className="mt-4 text-sm bg-red-100 text-red-700 px-4 py-2 rounded-md">
+              <div className="mt-2 text-sm bg-red-100 text-red-700 px-4 py-2 rounded-md">
                 {mensaje}
               </div>
             )}
           </form>
-          <p className="text-sm text-center text-[#536a86] mt-4">
+
+          <p className="text-sm text-center mt-6">
             ¿Todavía no tenés una cuenta?{' '}
-            <a href="/registro" className="underline hover:text-[#40576d]">
+            <a href="/registro" className="underline hover:text-[#40576d] transition">
               Registrate acá
             </a>
           </p>
         </div>
-      </section>
+      </main>
 
-      {/* Modal se muestra solo en caso de éxito */}
       {mostrarModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm mx-auto">
-            <p className="text-sm text-green-700">{mensaje}</p>
+          <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm mx-auto text-center text-[#436E6C]">
+            <p className="text-sm mb-4">{mensaje}</p>
             <button
               onClick={() => setMostrarModal(false)}
-              className="mt-4 bg-[#536a86] text-white px-4 py-2 rounded-md hover:bg-[#40576d] transition block mx-auto"
+              className="bg-[#436E6C] text-white px-4 py-2 rounded-md hover:bg-[#5A9A98] transition"
             >
               Cerrar
             </button>

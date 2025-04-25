@@ -5,6 +5,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { es } from 'date-fns/locale';
 
+
 export default function ReservaTurno() {
   const [form, setForm] = useState({
     nombre: '',
@@ -28,7 +29,7 @@ export default function ReservaTurno() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             ...form,
-            fecha: formattedDate
+            fecha: formattedDate,
           }),
         });
         const data = await res.json();
@@ -54,7 +55,7 @@ export default function ReservaTurno() {
   const horarios = ['10:00', '11:00', '14:00', '15:30', '17:00'];
 
   const handleChange = (
-      e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -63,103 +64,99 @@ export default function ReservaTurno() {
     setForm({ ...form, fecha: date });
   };
 
-  // Filter available dates (only weekdays - no weekends)
   const isWeekday = (date: Date) => {
     const day = date.getDay();
-    return day !== 0 && day !== 6; // 0 is Sunday, 6 is Saturday
+    return day !== 0 && day !== 6;
   };
 
   return (
-      <section className="py-6 px-2 bg-[#f0f8ff] font-roboto">
-        <div className="max-w-xl mx-auto text-center bg-[#B6D5C8] p-6 rounded-xl shadow-md text-[#436E6C]">
-          <form className="space-y-4 text-left" onSubmit={handleSubmit}>
-            <input
-                type="text"
-                name="nombre"
-                placeholder="Nombre completo"
-                value={form.nombre}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6C] focus:outline-none focus:ring-2 focus:ring-[#B6D5C8]"
+    <section className="bg-white text-[#436E6C] font-roboto py-10 px-4 text-center">
+      <div className="max-w-2xl mx-auto bg-[#F5F9F8] rounded-xl shadow-md p-8 text-left">
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="nombre"
+            placeholder="Nombre completo"
+            value={form.nombre}
+            onChange={handleChange}
+            className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
+          />
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Correo electrónico"
+            value={form.email}
+            onChange={handleChange}
+            className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
+          />
+
+          <select
+            name="servicio"
+            value={form.servicio}
+            onChange={handleChange}
+            className="w-full p-3 rounded-md border border-[#B6D5C8] text-[#436E6C] bg-white focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
+          >
+            <option value="">Seleccioná un servicio</option>
+            {servicios.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+          <div className="w-full">
+            <DatePicker
+              selected={form.fecha}
+              onChange={handleDateChange}
+              filterDate={isWeekday}
+              dateFormat="dd/MM/yyyy"
+              locale={es}
+              placeholderText="Seleccioná una fecha"
+              minDate={new Date()}
+              className="block w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6C] bg-white focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
+              wrapperClassName="w-full"
             />
+          </div>
 
-            <input
-                type="email"
-                name="email"
-                placeholder="Correo electrónico"
-                value={form.email}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6D] focus:outline-none focus:ring-2 focus:ring-[#B6D5C8]"
-            />
+          <select
+            name="horario"
+            value={form.horario}
+            onChange={handleChange}
+            className="w-full p-3 rounded-md border border-[#B6D5C8] text-[#436E6C] bg-white focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
+          >
+            <option value="">Seleccioná un horario</option>
+            {horarios.map((h) => (
+              <option key={h} value={h}>{h}</option>
+            ))}
+          </select>
 
-            <select
-                name="servicio"
-                value={form.servicio}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6C] bg-white"
-            >
-              <option value="">Seleccioná un servicio</option>
-              {servicios.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-              ))}
-            </select>
+          <button
+            type="submit"
+            className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition"
+          >
+            Confirmar turno
+          </button>
 
-            <div className="w-full">
-              <DatePicker
-                  selected={form.fecha}
-                  onChange={handleDateChange}
-                  filterDate={isWeekday}
-                  dateFormat="dd/MM/yyyy"
-                  locale={es}
-                  placeholderText="Selecciona una fecha"
-                  minDate={new Date()}
-                  className="w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6C] bg-white focus:outline-none focus:ring-2 focus:ring-[#B6D5C8]"
-              />
+          {tipoMensaje === 'error' && mensaje && (
+            <div className="mt-2 text-sm bg-red-100 text-red-700 px-4 py-2 rounded-md">
+              {mensaje}
             </div>
+          )}
+        </form>
+      </div>
 
-            <select
-                name="horario"
-                value={form.horario}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6C] bg-white"
-            >
-              <option value="">Seleccioná un horario</option>
-              {horarios.map((h) => (
-                  <option key={h} value={h}>
-                    {h}
-                  </option>
-              ))}
-            </select>
-
+  
+      {mostrarModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm mx-auto text-center">
+            <p className="text-sm text-green-700 mb-4">{mensaje}</p>
             <button
-                type="submit"
-                className="w-full bg-[#436E6C] text-white py-2 rounded-md hover:bg-[#5A9A98] transition"
+              onClick={() => setMostrarModal(false)}
+              className="bg-[#436E6C] text-white px-4 py-2 rounded-md hover:bg-[#5A9A98] transition"
             >
-              Confirmar turno
+              Cerrar
             </button>
-            {tipoMensaje === 'error' && mensaje && (
-                <div className="mt-4 text-sm bg-red-100 text-red-700 px-4 py-2 rounded-md">
-                  {mensaje}
-                </div>
-            )}
-          </form>
+          </div>
         </div>
-
-        {/* Modal se muestra solo en caso de éxito */}
-        {mostrarModal && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm mx-auto">
-                <p className="text-sm text-green-700">{mensaje}</p>
-                <button
-                    onClick={() => setMostrarModal(false)}
-                    className="mt-4 bg-[#436E6C] text-white px-4 py-2 rounded-md hover:bg-[#5A9A98] transition block mx-auto"
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
-        )}
-      </section>
+      )}
+    </section>
   );
 }

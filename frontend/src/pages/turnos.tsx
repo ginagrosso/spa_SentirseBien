@@ -4,35 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import servicios from '../data/servicios';
 import { useEffect, useState } from 'react';
-
-
-const turnos = [
-  {
-    id: 1,
-    nombre: 'Lucia Tonzar',
-    servicio: servicios[0].services[0].name,
-    dia: 'Lunes',
-    horario: '10:00',
-    estado: 'Confirmado',
-  },
-  {
-    id: 2,
-    nombre: 'Lucia Tonzar',
-    servicio: servicios[1].services[0].name,
-    dia: 'Martes',
-    horario: '11:00',
-    estado: 'Pendiente',
-  },
-  {
-    id: 3,
-    nombre: 'Lucia Tonzar',
-    servicio: servicios[4].services[0].name,
-    dia: 'Martes',
-    horario: '11:00',
-    estado: 'Cancelado',
-  },
-];
-
+import { motion } from 'framer-motion';
 
 type Turno = {
   id: number;
@@ -74,66 +46,108 @@ export default function MisTurnos() {
   return (
     <>
       <Header />
-      <section className="bg-[#f0f8ff] min-h-screen py-12 px-6 font-roboto text-[#436E6C]">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-semibold mb-8 text-center">Mis Turnos</h1>
 
+      <section className="bg-[#F5F9F8] text-[#436E6C] font-roboto py-16 px-4 text-center">
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-4xl font-amiri italic mb-4"
+        >
+          Mis Turnos
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          viewport={{ once: true }}
+          className="max-w-2xl mx-auto text-lg"
+        >
+          Gestioná tus reservas y mantené tu agenda actualizada.
+        </motion.p>
+      </section>
+
+      <main className="px-4 py-16 bg-white font-roboto">
+        <div className="max-w-6xl mx-auto">
+          
           {mensaje && (
-            <div className="bg-green-100 text-green-700 text-center py-2 px-4 rounded mb-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="bg-green-100 text-green-700 text-center py-2 px-4 rounded mb-8"
+            >
               {mensaje}
-            </div>
+            </motion.div>
           )}
 
-          <div className="flex justify-center gap-4 mb-8 flex-wrap">
+          <div className="flex justify-center gap-4 flex-wrap mb-10">
             {['Todos', 'Confirmado', 'Pendiente', 'Cancelado'].map((estado) => (
               <button
                 key={estado}
-                className={`px-4 py-2 rounded-full border transition text-sm ${
+                onClick={() => setFiltro(estado)}
+                className={`px-6 py-2 rounded-full border transition text-sm ${
                   filtro === estado
                     ? 'bg-[#436E6C] text-white'
                     : 'bg-white text-[#436E6C] border-[#B6D5C8]'
-                }`}
-                onClick={() => setFiltro(estado)}
+                } hover:bg-[#5A9A98] hover:text-white`}
               >
                 {estado}
               </button>
             ))}
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {turnosFiltrados.map((t) => (
-              <div key={t.id} className="bg-white rounded-xl shadow p-6 space-y-2 border border-[#B6D5C8]">
-                <h3 className="text-lg font-semibold">{t.servicio}</h3>
-                <p><span className="font-medium">Día:</span> {t.dia}</p>
-                <p><span className="font-medium">Horario:</span> {t.horario}</p>
-                <p>
-                  <span className="font-medium">Estado:</span>{' '}
-                  <span
-                    className={`font-semibold ${
-                      t.estado === 'Cancelado'
-                        ? 'text-red-500'
-                        : t.estado === 'Pendiente'
-                        ? 'text-yellow-500'
-                        : 'text-green-600'
-                    }`}
-                  >
-                    {t.estado}
-                  </span>
-                </p>
-                {t.estado !== 'Cancelado' && (
-                  <button
-                    onClick={() => handleCancelar(t.id)}
-                    className="mt-4 px-4 py-2 rounded-full text-sm bg-red-200 hover:bg-red-300 text-red-800 transition"
-                  >
-                    Cancelar turno
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          {turnosFiltrados.length > 0 ? (
+            <div className="grid md:grid-cols-2 gap-8">
+              {turnosFiltrados.map((t) => (
+                <motion.div
+                  key={t.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  viewport={{ once: true }}
+                  className="bg-[#F5F9F8] p-6 rounded-xl shadow-md border border-[#B6D5C8] flex flex-col justify-between"
+                >
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">{t.servicio}</h3>
+                    <p><span className="font-medium">Día:</span> {t.dia}</p>
+                    <p><span className="font-medium">Horario:</span> {t.horario}</p>
+                    <p>
+                      <span className="font-medium">Estado:</span>{' '}
+                      <span
+                        className={`font-semibold ${
+                          t.estado === 'Cancelado'
+                            ? 'text-red-500'
+                            : t.estado === 'Pendiente'
+                            ? 'text-yellow-500'
+                            : 'text-green-600'
+                        }`}
+                      >
+                        {t.estado}
+                      </span>
+                    </p>
+                  </div>
+
+                  {t.estado !== 'Cancelado' && (
+                    <button
+                      onClick={() => handleCancelar(t.id)}
+                      className="mt-6 bg-red-200 hover:bg-red-300 text-red-800 px-4 py-2 rounded-full text-sm transition"
+                    >
+                      Cancelar turno
+                    </button>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-[#436E6C] mt-10">No tenés turnos disponibles.</p>
+          )}
+
         </div>
-      </section>
+      </main>
+
       <Footer />
     </>
   );
 }
+
