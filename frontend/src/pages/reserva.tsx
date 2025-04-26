@@ -1,38 +1,53 @@
-'use client';
+import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/router';
 
-import ReservaTurno from '../components/ReservaTurno';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { motion } from 'framer-motion';
+export default function ReservarPage() {
+    const { token } = useAuth();
+    const router = useRouter();
+    const [form, setForm] = useState({ nombre:'', email:'', servicio:'', fecha:'', horario:'' });
 
-export default function PaginaReserva() {
-  return (
-    <>
-      <Header />
-      <section className="bg-[#F5F9F8] text-[#436E6C] font-roboto py-16 pt-12 px-4 text-center">
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-4xl font-amiri italic mb-4"
-        >
-          Reserva tu turno
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="max-w-3xl mx-auto text-lg"
-        >
-        Completá el siguiente formulario para elegir tu momento con <span className="font-semibold">Sentirse Bien</span>.
-        </motion.p>
-      </section>
-      <main>
-        <ReservaTurno />
-      </main>
-      <Footer />
-    </>
-  );
+    if (!token && typeof window !== 'undefined') {
+        router.push('/login');
+        return null;
+    }
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        const res = await fetch('/api/reservas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(form),
+        });
+        const data = await res.json();
+        if (res.ok) {
+            alert(data.mensaje);
+            router.push('/misturnos');
+        } else {
+            alert(data.error || 'Error en reserva');
+        }
+    }
+
+    return (
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4">
+            <h1 className="text-xl mb-4">Nueva Reserva</h1>
+            {['nombre','email','servicio','fecha','horario'].map(field => (
+                <input
+                    key={field}
+                    type={field==='fecha'? 'date' : 'text'}
+                    placeholder={field.charAt(0).toUpperCase()+field.slice(1)}
+                    className="block w-full p-2 mb-3 border"
+                    value={form[field]}
+                    onChange={e => setForm({...form, [field]: e.target.value})}
+                    required
+                />
+            ))}
+            <button type="submit" className="px-4 py-2 bg-green-500 text-white">
+                Reservar
+            </button>
+        </form>
+    );
 }
