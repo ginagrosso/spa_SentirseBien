@@ -4,13 +4,16 @@ node_modules/
 *.log
 .idea
 .env.local
+/node_modules
+/package-lock.json
+
 
 # Next.js
-frontend/.next/
-frontend/package-lock.json
+app/.next/
+app/package-lock.json
 
 # Backend (cuando lo crees)
 backend/node_modules/
 backend/dist/
 backend/package-lock.json
-!/frontend/.env.local
+!/app/.env.local
