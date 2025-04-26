@@ -3,7 +3,20 @@
 import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-
+// Test function you can add to registro.tsx
+const testConnection = async () => {
+  try {
+    const response = await fetch('/api/registro', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ test: true }),
+    });
+    const data = await response.json();
+    console.log('API response:', data);
+  } catch (error) {
+    console.error('Connection test failed:', error);
+  }
+};
 export default function Registro() {
   const [form, setForm] = useState({
     nombre: '',

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from 'lib/prisma';
+import { prisma } from '../../lib/prisma';
 import bcrypt from 'bcryptjs';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(201).json({ mensaje: 'Usuario registrado con éxito.' });
   } catch (error) {
-    console.error('Error en registro:', error);
+    console.error('Error en registro (detallado):', error instanceof Error ? error.message : error);
     return res.status(500).json({ error: 'Error en el servidor.' });
   }
 }
