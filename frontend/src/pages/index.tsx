@@ -59,13 +59,6 @@ export default function HomePage() {
 
       <ServicesSlider />
 
-      
-      <div className="flex justify-center bg-[#F5F9F8] my-8">
-        <span className="inline-block w-20 h-px bg-accent/40"></span>
-        <span className="inline-block w-3 h-3 mx-2 rounded-full bg-accent/60"></span>
-        <span className="inline-block w-20 h-px bg-accent/40"></span>
-      </div>
-
       <section className="pt-2 pb-12 px-6 bg-gradient-to-b from-[#F5F9F8] to-white font-roboto text-dark text-center">
         <h2 className="text-3xl italic font-bold mb-10 font-lora text-primary">Lo que dicen nuestros clientes</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
