@@ -7,7 +7,7 @@ import Servicios from "../components/Servicios";
 export default function PaginaServicios() {
   return (
     <>
-      <Header />
+      <Header transparent={false} />
       <main>
         <Servicios />
       </main>

@@ -1,26 +1,47 @@
 'use client';
 
+import { motion } from 'framer-motion';
+
 export default function Hero() {
   return (
     <section
-      className="relative h-[70vh] flex items-center justify-center font-roboto text-center bg-cover bg-center bg-no-repeat"
+      className="relative h-[80vh] flex items-center justify-center font-roboto text-center bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/images/hero.png')" }}
     >
-      <div className="absolute inset-0 bg-primary/40 backdrop-blur-sm"></div>
-      <div className="relative z-10 max-w-3xl px-4 mx-auto text-center">
-        <h2 className="text-4xl md:text-5xl italic font-semibold font-lora text-white mb-4 drop-shadow-lg">
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/50 to-primary/30 backdrop-blur-[2px]"></div>
+      <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
+      <motion.div 
+        className="relative z-10 max-w-3xl px-4 mx-auto text-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <motion.h2 
+          className="text-4xl md:text-6xl italic font-semibold font-lora text-white mb-6 drop-shadow-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
           Tu refugio de serenidad te espera
-        </h2>
-        <p className="text-white text-lg font-light mb-6 drop-shadow">
+        </motion.h2>
+        <motion.p 
+          className="text-white text-lg md:text-xl font-light mb-8 drop-shadow"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
           Vive la experiencia de un descanso profundo para el alma.
-        </p>
-        <a
+        </motion.p>
+        <motion.a
           href="/reserva"
-          className="inline-block mt-6 px-8 py-3 bg-primary text-white rounded-full shadow-lg font-semibold text-lg hover:bg-[#5A9A98] transition-colors"
+          className="inline-block mt-6 px-10 py-4 bg-primary text-white rounded-full shadow-lg font-semibold text-lg hover:bg-[#5A9A98] transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
         >
           Reservá tu turno
-        </a>
-      </div>
+        </motion.a>
+      </motion.div>
       <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] pointer-events-none">
         <svg
           className="relative block w-[calc(150%+1.3px)] h-[120px]"
@@ -41,7 +62,7 @@ export default function Hero() {
             d="M0,64L48,69.3C96,75,192,85,288,85.3C384,85,480,75,576,64C672,53,768,43,864,53.3C960,64,1056,96,1152,90.7C1248,85,1344,43,1392,21.3L1440,0L1440,120L0,120Z"
           />
         </svg>
-        <div className="absolute opacity-80 bottom-0 left-0 w-full h-16 bg-gradient-to-b from-[#ffffff]/0 to-[#ffffff] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-b from-[#ffffff]/0 to-[#ffffff] pointer-events-none" />
       </div>
     </section>
   );
