@@ -16,5 +16,3 @@ app/package-lock.json
 backend/node_modules/
 backend/dist/
 backend/package-lock.json
-!/app/.env.local
-frontend/.env.local
