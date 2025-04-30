@@ -152,41 +152,13 @@ export default function ServicesPage() {
 
   return (
     <>
-      <section className="relative bg-gradient-to-b from-[#F5F9F8] to-white text-primary font-roboto pt-24 pb-10 px-4 text-center overflow-hidden mt-12">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/decoration2.png"
-            alt=""
-            fill
-            className="object-cover opacity-30"
-          />
-        </div>
-        <motion.div 
-          className="relative z-10 max-w-3xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h1 className="text-4xl md:text-5xl font-lora italic mb-6">Nuestros Servicios</h1>
-          <p className="text-lg md:text-xl font-light">
-            Descubrí todos los tratamientos que <span className="font-semibold">Sentirse Bien</span> tiene para vos.
-          </p>
-          <div className="flex justify-center items-center gap-3 my-8">
-            <span className="w-2.5 h-2.5 rounded-full bg-accent/60 animate-pulse"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-accent/40 animate-pulse delay-150"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-accent/60 animate-pulse delay-300"></span>
-          </div>
-        </motion.div>
-      </section>
-
       <main className="relative min-h-screen font-roboto">
         <div className="max-w-7xl mx-auto px-4 py-16">
           <div className="flex flex-col md:flex-row gap-8">
-            {/* Filter Sidebar */}
+
             <div className="md:w-64 w-full bg-white/80 rounded-xl shadow-lg p-6 h-fit backdrop-blur-sm border border-accent/20">
-              <h3 className="text-lg font-lora font-semibold mb-4 text-primary">Filtrar por</h3>
-              
-              {/* Category Filter */}
+              <h3 className="text-lg font-lora font-semibold mb-4 text-primary">Filtrar por</h3>          
+
               <div className="mb-6">
                 <h4 className="text-sm font-medium text-primary/80 mb-2">Categoría</h4>
                 <div className="space-y-2">
@@ -225,7 +197,6 @@ export default function ServicesPage() {
               </div>
             </div>
 
-            {/* Services Grid */}
             <div className="flex-1">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredTreatments.flatMap(category => 
@@ -238,7 +209,7 @@ export default function ServicesPage() {
                       transition={{ duration: 0.4, delay: idx * 0.1 }}
                       viewport={{ once: true }}
                     >
-                      {/* Background Image */}
+
                       <div className="absolute inset-0">
                         <Image
                           src={service.image}
@@ -247,15 +218,13 @@ export default function ServicesPage() {
                           className="object-cover"
                         />
                       </div>
-                      
-                      {/* Content Container */}
+
                       <div className="relative h-full flex flex-col">
-                        {/* Image Section */}
+
                         <div className="w-full h-40 relative">
                           <div className="absolute inset-0 bg-black/20"></div>
                         </div>
                         
-                        {/* Content Section */}
                         <div className="flex-1 flex flex-col justify-between p-4 bg-white/80">
                           <div>
                             <div className="flex justify-between items-start mb-2">

@@ -8,8 +8,7 @@ export default function Hero() {
       className="relative h-[80vh] flex items-center justify-center font-roboto text-center bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/images/hero.png')" }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/50 to-primary/30 backdrop-blur-[2px]"></div>
-      <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/50 to-primary/40 backdrop-blur-[2px]"></div>
       <motion.div 
         className="relative z-10 max-w-3xl px-4 mx-auto text-center"
         initial={{ opacity: 0, y: 20 }}
