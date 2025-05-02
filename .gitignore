@@ -1,19 +1,47 @@
-# Node
+# Dependencies
 node_modules/
-.env
-*.log
-.idea
-.env.local
-/node_modules
-/package-lock.json
+/.pnp
+.pnp.js
 
+# Testing
+/coverage
 
 # Next.js
+/.next/
+/out/
+/build
 app/.next/
-app/package-lock.json
 
-# Backend (cuando lo crees)
-backend/node_modules/
-backend/dist/
-backend/package-lock.json
-!/app/.env.local
+# Production
+/dist
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local env files
+.env
+.env*.local
+!app/.env.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.idea
+.vscode
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

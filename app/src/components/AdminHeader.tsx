@@ -5,10 +5,10 @@ import { Bell, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function AdminHeader() {
-  const { user } = useAuth();
+  const { user } = useAuth() as { user?: { nombre?: string; rol?: string } };
 
   return (
-    <motion.div 
+    <motion.div
       className="bg-white shadow-sm border-b border-gray-200"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
