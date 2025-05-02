@@ -4,6 +4,10 @@ node_modules/
 *.log
 .idea
 .env.local
+# Ignorar artefactos de Next
+app/.next/
+frontend/.next/
+
 
 
 # Next.js
