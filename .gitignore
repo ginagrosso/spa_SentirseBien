@@ -11,6 +11,8 @@ node_modules/
 /out/
 /build
 app/.next/
+.next/
+**/.next/
 
 # Production
 /dist
