@@ -3,6 +3,8 @@ node_modules/
 .env
 *.log
 .idea
+.env.local
+
 
 # Next.js
 frontend/.next/
