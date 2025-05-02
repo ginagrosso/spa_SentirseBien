@@ -15,3 +15,6 @@ backend/package-lock.json
 # Next.js build
 app/.next/
 frontend/.next/
+
+# Next.js build artifacts
+/.next/
