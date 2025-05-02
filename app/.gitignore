@@ -3,8 +3,6 @@ node_modules/
 ../prisma/.env
 *.log
 .idea
-.env
-.env.local
 
 # Next.js
 frontend/.next/
