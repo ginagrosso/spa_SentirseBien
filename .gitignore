@@ -26,6 +26,7 @@ yarn-error.log*
 /build
 /dist
 /app/dist/
+/app/.next/         # Added to ignore Next.js build files in app directory
 
 # Cache
 .cache/
