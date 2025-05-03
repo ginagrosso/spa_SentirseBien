@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from 'lib/prisma';
+import { prisma } from '../../lib/prisma';
 import bcrypt from 'bcryptjs';
-import { generateToken } from 'lib/jwt';
+import { generateToken } from '../../lib/jwt';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -21,7 +21,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const token = generateToken({ id: user.id, email: user.email });
-    return res.status(200).json({ mensaje: 'Inicio de sesión exitoso', token });
+    return res.status(200).json({
+      mensaje: 'Inicio de sesión exitoso',
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        // Add any other user fields needed by the frontend
+      }
+    });
   } catch (error) {
     console.error('Error en login:', error);
     return res.status(500).json({ error: 'Error en el servidor' });
