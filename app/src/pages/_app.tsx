@@ -1,5 +1,4 @@
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
 import '@fontsource/roboto';
 import '@fontsource/amiri';
 import { AuthProvider } from '../context/AuthContext';

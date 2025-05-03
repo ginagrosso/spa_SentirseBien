@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
@@ -24,7 +24,7 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        await login(data.token); // Add await here if your login function returns a promise
+        await login(data.token, data.user); // Added second parameter for login function
         setTimeout(() => {
           router.push('/reserva');
         }, 300); // Add a small delay to ensure state updates before navigation

@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-5"></div>
       <div className="w-full px-4 max-w-6xl mx-auto relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-center items-start">
-          <motion.div 
+          <motion.div
             className="flex flex-col items-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -30,7 +30,7 @@ export default function Footer() {
             <p className="text-xs italic text-soft/80">Dra. Ana Felicidad</p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="flex flex-col items-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -45,7 +45,7 @@ export default function Footer() {
                 { href: '/turnos', label: 'Mis Turnos' },
                 { href: '/contacto', label: 'Contacto' }
               ].map((link, index) => (
-                <motion.li 
+                <motion.li
                   key={link.href}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -66,7 +66,7 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="flex flex-col items-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -90,7 +90,7 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="flex flex-col items-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -99,31 +99,33 @@ export default function Footer() {
           >
             <h3 className="text-base font-lora font-semibold mb-4 text-accent">Seguinos</h3>
             <div className="flex gap-4 justify-center">
-              <motion.a 
-                href="https://www.instagram.com" 
-                target="_blank" 
+              <motion.a
+                href="https://www.instagram.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="group rounded-full p-2 transition-all duration-300 hover:bg-accent/30"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
+                {/* suppress XmlDeprecatedElement */}
                 <Instagram className="w-6 h-6 group-hover:text-accent transition-colors duration-300" />
               </motion.a>
-              <motion.a 
-                href="https://www.facebook.com" 
-                target="_blank" 
+              <motion.a
+                href="https://www.facebook.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="group rounded-full p-2 transition-all duration-300 hover:bg-accent/30"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
+                {/* suppress XmlDeprecatedElement */}
                 <Facebook className="w-6 h-6 group-hover:text-accent transition-colors duration-300" />
               </motion.a>
             </div>
           </motion.div>
         </div>
 
-        <motion.div 
+        <motion.div
           className="border-t border-accent/30 mt-12 pt-6 text-center text-xs text-soft/80"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { verifyToken } from '../lib/jwt';
+import { verifyToken } from 'lib/jwt';
 
 export function authenticate(req: NextApiRequest, res: NextApiResponse, next: Function) {
   const authHeader = req.headers.authorization;

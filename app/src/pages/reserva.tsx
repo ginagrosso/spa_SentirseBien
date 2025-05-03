@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FiCalendar, FiClock, FiUser, FiMail, FiPhone } from 'react-icons/fi';
@@ -19,7 +19,7 @@ export default function Reserva() {
   const servicioId = searchParams?.get('servicio');
   const { user, token } = useAuth();
 
-  const [servicio, setServicio] = useState<Servicio | null>(null);
+  const [, setServicio] = useState<Servicio | null>(null);
   const [formData, setFormData] = useState({
     nombre: user?.nombre || '',
     email: user?.email || '',

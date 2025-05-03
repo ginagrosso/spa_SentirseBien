@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react';
 
+interface Turno {
+  id: string | number;
+  dia: string;
+  horario: string;
+  servicio: string;
+  estado: string;
+}
+
 export default function MisTurnosPage() {
-    const [turnos, setTurnos] = useState([]);
+    const [turnos, setTurnos] = useState<Turno[]>([]);
 
     useEffect(() => {
         fetch('/api/misturnos')

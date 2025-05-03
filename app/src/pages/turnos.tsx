@@ -3,7 +3,6 @@
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageHero from '../components/PageHero';
-import servicios from '../data/servicios';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 

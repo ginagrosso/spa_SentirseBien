@@ -1,16 +1,11 @@
 'use client';
 
-import { Leaf } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
-const decorativeLeaves = (
-  <svg width="120" height="240" viewBox="0 0 120 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-30">
-    <path d="M60 0C90 60 120 120 60 240C0 120 30 60 60 0Z" fill="#B7D3C6"/>
-  </svg>
-);
+
 
 const treatments = [
   {
