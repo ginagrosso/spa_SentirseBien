@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri&family=Roboto&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+::-webkit-scrollbar {
+  display: none;
+}
