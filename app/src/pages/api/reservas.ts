@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { connectToDatabase } from '@/lib/mongodb';
-import { ServiceModel } from '@/models/Service';
-import { ReservationModel } from '@/models/Reservation';
+import dbConnect from '../../lib/dbConnect';
+import { ServiceModel } from '../../models/Service';
+import { ReservationModel } from '../../models/Reservation';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  await connectToDatabase();
+  await dbConnect();
 
   if (req.method === 'GET') {
     const reservas = await ReservationModel.find().populate('service');

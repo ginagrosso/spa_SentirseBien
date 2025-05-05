@@ -1,21 +1,49 @@
-// src/models/Service.ts
-import { Schema, model, models } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
-interface Service {
-    name: string;
-    price: number;
-    duration: number;  // minutos, por ejemplo
-    // …otros campos que tengas hardcodeados
+// Define the interface for Service document
+export interface IService extends Document {
+  name: string;
+  description: string;
+  duration: number; // in minutes
+  price: number;
+  available: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const ServiceSchema = new Schema<Service>({
-    name:     { type: String, required: true },
-    price:    { type: Number, required: true },
-    duration: { type: Number, required: true },
-}, {
-    collection: 'services',
-    timestamps: true,
-});
+// Create the schema
+const ServiceSchema = new Schema<IService>(
+  {
+    name: {
+      type: String,
+      required: [true, 'Name is required'],
+      trim: true
+    },
+    description: {
+      type: String,
+      required: [true, 'Description is required'],
+      trim: true
+    },
+    duration: {
+      type: Number,
+      required: [true, 'Duration is required'],
+      min: [1, 'Duration must be at least 1 minute']
+    },
+    price: {
+      type: Number,
+      required: [true, 'Price is required'],
+      min: [0, 'Price cannot be negative']
+    },
+    available: {
+      type: Boolean,
+      default: true
+    }
+  },
+  {
+    timestamps: true
+  }
+);
 
-// Evita recompilar el modelo multiple veces en dev
-export const ServiceModel = models.Service || model<Service>('Service', ServiceSchema);
+// Create and export the model
+export const ServiceModel = mongoose.models.Service ||
+  mongoose.model<IService>('Service', ServiceSchema);
