@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
@@ -11,11 +9,15 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [tipoMensaje, setTipoMensaje] = useState<'exito' | 'error' | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setIsLoading(true);
+    setMensaje(null);
+
     try {
       const res = await fetch('/api/login', {
         method: 'POST',
@@ -23,18 +25,20 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
+
       if (res.ok) {
-        await login(data.token, data.user); // Added second parameter for login function
-        setTimeout(() => {
-          router.push('/reserva');
-        }, 300); // Add a small delay to ensure state updates before navigation
+        await login(data.token, data.user);
+        router.push('/reserva');
       } else {
         setMensaje(data.error || 'Error en login');
         setTipoMensaje('error');
       }
-    } catch {
+    } catch (error) {
+      console.error('Login error:', error);
       setMensaje('Error de conexión. Intente nuevamente.');
       setTipoMensaje('error');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -71,9 +75,10 @@ export default function LoginPage() {
             />
             <button
               type="submit"
-              className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition"
+              disabled={isLoading}
+              className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition disabled:bg-opacity-70 disabled:cursor-not-allowed"
             >
-              Entrar
+              {isLoading ? 'Procesando...' : 'Entrar'}
             </button>
 
             {mensaje && (
