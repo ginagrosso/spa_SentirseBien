@@ -5,14 +5,15 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 interface User {
     id: string;
     email: string;
-    nombre: string;
+    nombre?: string;
+    telefono?: string;
     rol: string;
 }
 
 interface AuthContextType {
     user: User | null;
     token: string | null;
-    login: (userData: User, token: string) => void;
+    login: (token: string, userData: User) => void; // Fixed parameter order
     logout: () => void;
     isLoading: boolean;
 }
@@ -56,7 +57,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         };
     }, []);
 
-    const login = (userData: User, newToken: string) => {
+    // Fixed login function with correct parameter order
+    const login = (newToken: string, userData: User) => {
+        console.log("AuthContext: Saving user data:", userData);
+        console.log("AuthContext: User role:", userData.rol);
+
         try {
             // Set user data
             setUser(userData);
@@ -65,6 +70,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // Set token
             setToken(newToken);
             localStorage.setItem('token', newToken);
+
+            console.log("AuthContext: Auth data saved successfully");
         } catch (error) {
             console.error('Error saving auth data to localStorage:', error);
         }

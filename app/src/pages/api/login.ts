@@ -32,7 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         id: user._id,
         email: user.email,
         nombre: user.nombre,
-        telefono: user.telefono
+        telefono: user.telefono,
+        rol: user.rol  // Include the user's role in the response
       }
     });
   } catch (error) {
