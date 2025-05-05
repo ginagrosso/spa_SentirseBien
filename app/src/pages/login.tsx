@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
@@ -10,15 +10,22 @@ export default function LoginPage() {
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [tipoMensaje, setTipoMensaje] = useState<'exito' | 'error' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const router = useRouter();
+
+  // Debug user data on component mount and when it changes
+  useEffect(() => {
+    console.log("Current user in LoginPage:", user);
+  }, [user]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
     setMensaje(null);
+    console.log("Login form submitted for email:", email);
 
     try {
+      console.log("Sending login request to API");
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -26,10 +33,36 @@ export default function LoginPage() {
       });
       const data = await res.json();
 
+      console.log("API response status:", res.status);
+      console.log("API response data:", data);
+      console.log("User from API:", data.user);
+      console.log("User role from API:", data.user?.rol || data.user?.role);
+
       if (res.ok) {
+        // Store user data
+        console.log("Login successful, calling context.login()");
         await login(data.token, data.user);
-        router.push('/reserva');
+        console.log("Context updated with user data");
+
+        // Check user role for redirection - handle both field names
+        const userRole = data.user?.rol || data.user?.role;
+        console.log(`Redirecting based on role: "${userRole}"`);
+
+        console.log("Checking role:", userRole, "Type:", typeof userRole);
+        console.log("Is admin?", String(userRole).toLowerCase() === 'admin');
+
+        // Force comparison as string and add delay to ensure state updates
+        setTimeout(() => {
+          if (String(userRole).toLowerCase() === 'admin') {
+            console.log("ADMIN USER CONFIRMED - redirecting to dashboard");
+            window.location.href = '/admin/dashboard';
+          } else {
+            console.log("Regular user confirmed - redirecting to reserva");
+            window.location.href = '/reserva';
+          }
+        }, 300);
       } else {
+        console.log("Login failed:", data.error);
         setMensaje(data.error || 'Error en login');
         setTipoMensaje('error');
       }
@@ -93,6 +126,14 @@ export default function LoginPage() {
               </div>
             )}
           </form>
+
+          {/* Debug display */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="mt-4 p-2 border border-gray-300 text-xs bg-gray-50">
+              <p>Debug info - current authentication state:</p>
+              <pre>{user ? `Logged in as: ${user.email} (${user.rol || user.rol})` : 'Not logged in'}</pre>
+            </div>
+          )}
         </div>
       </main>
 
