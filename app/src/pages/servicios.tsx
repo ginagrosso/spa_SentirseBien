@@ -5,17 +5,15 @@ import Footer from "../components/Footer";
 import Servicios from "../components/Servicios";
 import PageHero from "components/PageHero";
 
-export default function PaginaServicios() {
+export default function ServiciosPage() {
   return (
     <>
-      <Header transparent={false} />
+      <Header transparent={true} />
       <PageHero 
         title="Nuestros Servicios"
         description="Descubrí todos los tratamientos que Sentirse Bien tiene para vos."
       />
-      <main>
-        <Servicios />
-      </main>
+      <Servicios />
       <Footer />
     </>
   );
