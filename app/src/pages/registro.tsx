@@ -1,8 +1,7 @@
-'use client';
-
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useRouter } from 'next/router';
 
 export default function Registro() {
   const [form, setForm] = useState({
@@ -13,32 +12,72 @@ export default function Registro() {
   });
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [tipoMensaje, setTipoMensaje] = useState<'exito' | 'error' | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const validateForm = () => {
+    if (!form.nombre.trim()) {
+      setMensaje('El nombre es obligatorio');
+      setTipoMensaje('error');
+      return false;
+    }
+    if (!form.email.trim()) {
+      setMensaje('El email es obligatorio');
+      setTipoMensaje('error');
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setMensaje('Formato de email inválido');
+      setTipoMensaje('error');
+      return false;
+    }
+    if (!form.password) {
+      setMensaje('La contraseña es obligatoria');
+      setTipoMensaje('error');
+      return false;
+    }
+    if (form.password.length < 6) {
+      setMensaje('La contraseña debe tener al menos 6 caracteres');
+      setTipoMensaje('error');
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.email && form.password) {
-      try {
-        const res = await fetch('/api/registro', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(form),
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setMensaje(data.mensaje);
-          setTipoMensaje('exito');
-          setForm({ nombre: '', email: '', telefono: '', password: '' });
-        } else {
-          setMensaje(data.error || 'Error al registrarse');
-          setTipoMensaje('error');
-        }
-      } catch {
-        setMensaje('Error de conexión. Intente nuevamente.');
+    setMensaje(null);
+
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/registro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setMensaje(data.mensaje || 'Registro exitoso! Ahora puedes iniciar sesión.');
+        setTipoMensaje('exito');
+        setForm({ nombre: '', email: '', telefono: '', password: '' });
+
+        // Redirect to login page after successful registration
+        setTimeout(() => {
+          router.push('/login');
+        }, 2000);
+      } else {
+        setMensaje(data.error || 'Error al registrarse');
         setTipoMensaje('error');
       }
-    } else {
-      setMensaje('Email y contraseña son obligatorios');
+    } catch (error) {
+      console.error('Registration error:', error);
+      setMensaje('Error de conexión. Intente nuevamente.');
       setTipoMensaje('error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -68,6 +107,7 @@ export default function Registro() {
               onChange={handleChange}
               placeholder="Nombre completo"
               className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
+              required
             />
             <input
               type="email"
@@ -76,6 +116,7 @@ export default function Registro() {
               onChange={handleChange}
               placeholder="Correo electrónico"
               className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
+              required
             />
             <input
               type="tel"
@@ -92,12 +133,14 @@ export default function Registro() {
               onChange={handleChange}
               placeholder="Contraseña"
               className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
+              required
             />
             <button
               type="submit"
-              className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition"
+              disabled={isLoading}
+              className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition disabled:bg-opacity-70 disabled:cursor-not-allowed"
             >
-              Registrarse
+              {isLoading ? 'Procesando...' : 'Registrarse'}
             </button>
 
             {mensaje && (

@@ -3,11 +3,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiHome, 
-  FiSettings, 
-  FiCalendar, 
-  FiUsers, 
+import {
+  FiHome,
+  FiSettings,
+  FiCalendar,
+  FiUsers,
   FiBarChart2,
   FiLogOut,
   FiMenu
@@ -63,16 +63,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       >
         <div className="p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Image 
-              src="/images/logo.png" 
-              alt="Logo" 
-              width={40} 
+            <Image
+              src="/images/logo.png"
+              alt="Logo"
+              width={40}
               height={40}
               className="rounded-full border-2 border-white/20"
             />
             <AnimatePresence>
               {isSidebarOpen && (
-                <motion.h1 
+                <motion.h1
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
@@ -104,7 +104,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               </span>
               <AnimatePresence>
                 {isSidebarOpen && (
-                  <motion.span 
+                  <motion.span
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
@@ -128,7 +128,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </span>
           <AnimatePresence>
             {isSidebarOpen && (
-              <motion.span 
+              <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
@@ -142,7 +142,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       </motion.aside>
 
       {/* Main Content */}
-      <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-280' : 'ml-80'}`}>
+      <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-[280px]' : 'ml-[80px]'}`}>
         <AdminHeader />
         <div className="p-8">
           <motion.div
@@ -156,4 +156,4 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       </main>
     </div>
   );
-} 
+}

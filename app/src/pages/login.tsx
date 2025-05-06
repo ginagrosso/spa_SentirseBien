@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
@@ -11,30 +9,69 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [tipoMensaje, setTipoMensaje] = useState<'exito' | 'error' | null>(null);
-  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { login, user } = useAuth();
   const router = useRouter();
+
+  // Debug user data on component mount and when it changes
+  useEffect(() => {
+    console.log("Current user in LoginPage:", user);
+  }, [user]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setIsLoading(true);
+    setMensaje(null);
+    console.log("Login form submitted for email:", email);
+
     try {
+      console.log("Sending login request to API");
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
+
+      console.log("API response status:", res.status);
+      console.log("API response data:", data);
+      console.log("User from API:", data.user);
+      console.log("User role from API:", data.user?.rol);
+
       if (res.ok) {
-        await login(data.token, data.user); // Added second parameter for login function
+        // Store user data
+        console.log("Login successful, calling context.login()");
+        await login(data.token, data.user);
+        console.log("Context updated with user data");
+
+        // Check user role for redirection
+        const userRole = data.user?.rol;
+        console.log(`Redirecting based on role: "${userRole}"`);
+
+        console.log("Checking role:", userRole, "Type:", typeof userRole);
+        console.log("Is admin?", String(userRole).toLowerCase() === 'admin');
+
+        // Force comparison as string and add delay to ensure state updates
         setTimeout(() => {
-          router.push('/reserva');
-        }, 300); // Add a small delay to ensure state updates before navigation
+          if (String(userRole).toLowerCase() === 'admin') {
+            console.log("ADMIN USER CONFIRMED - redirecting to dashboard");
+            router.push('/admin/dashboard');
+          } else {
+            console.log("Regular user confirmed - redirecting to reserva");
+            router.push('/reserva');
+          }
+        }, 300);
       } else {
+        console.log("Login failed:", data.error);
         setMensaje(data.error || 'Error en login');
         setTipoMensaje('error');
       }
-    } catch {
+    } catch (error) {
+      console.error('Login error:', error);
       setMensaje('Error de conexión. Intente nuevamente.');
       setTipoMensaje('error');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -71,9 +108,10 @@ export default function LoginPage() {
             />
             <button
               type="submit"
-              className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition"
+              disabled={isLoading}
+              className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition disabled:bg-opacity-70 disabled:cursor-not-allowed"
             >
-              Entrar
+              {isLoading ? 'Procesando...' : 'Entrar'}
             </button>
 
             {mensaje && (
@@ -88,6 +126,14 @@ export default function LoginPage() {
               </div>
             )}
           </form>
+
+          {/* Debug display */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="mt-4 p-2 border border-gray-300 text-xs bg-gray-50">
+              <p>Debug info - current authentication state:</p>
+              <pre>{user ? `Logged in as: ${user.email} (${user.rol})` : 'Not logged in'}</pre>
+            </div>
+          )}
         </div>
       </main>
 
