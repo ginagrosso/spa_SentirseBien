@@ -1,162 +1,107 @@
+// src/components/ReservaTurno.tsx
 'use client';
 
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { es } from 'date-fns/locale';
+import toast from 'react-hot-toast';
+import servicios from '../data/servicios';
+import { createTurno, TurnoPayload } from '../lib/turnosClient';
 
-
-export default function ReservaTurno() {
-  const [form, setForm] = useState({
-    nombre: '',
-    email: '',
-    servicio: '',
-    fecha: null as Date | null,
-    horario: '',
-  });
-  const [mensaje, setMensaje] = useState<string | null>(null);
-  const [tipoMensaje, setTipoMensaje] = useState<'exito' | 'error' | null>(null);
-  const [mostrarModal, setMostrarModal] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (form.nombre && form.email && form.servicio && form.fecha && form.horario) {
-      try {
-        const formattedDate = form.fecha.toISOString().split('T')[0];
-
-        const res = await fetch('/api/reservas', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...form,
-            fecha: formattedDate,
-          }),
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setMensaje(data.mensaje);
-          setTipoMensaje('exito');
-          setMostrarModal(true);
-        } else {
-          setMensaje(data.error || 'Error en el sistema, intente nuevamente.');
-          setTipoMensaje('error');
-        }
-      } catch (error) {
-        setMensaje('Error de conexión. Intente nuevamente.');
-        setTipoMensaje('error');
-      }
-    } else {
-      setMensaje('Por favor, completá todos los campos.');
-      setTipoMensaje('error');
-    }
-  };
-
-  const servicios = ['Masaje relajante', 'Limpieza facial', 'Día de spa'];
-  const horarios = ['10:00', '11:00', '14:00', '15:30', '17:00'];
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleDateChange = (date: Date | null) => {
-    setForm({ ...form, fecha: date });
-  };
-
-  const isWeekday = (date: Date) => {
-    const day = date.getDay();
-    return day !== 0 && day !== 6;
-  };
-
-  return (
-    <section className="bg-white text-[#436E6C] font-roboto py-10 px-4 text-center">
-      <div className="max-w-2xl mx-auto bg-[#F5F9F8] rounded-xl shadow-md p-8 text-left">
-        <form className="space-y-5" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="nombre"
-            placeholder="Nombre completo"
-            value={form.nombre}
-            onChange={handleChange}
-            className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
-          />
-
-          <input
-            type="email"
-            name="email"
-            placeholder="Correo electrónico"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
-          />
-
-          <select
-            name="servicio"
-            value={form.servicio}
-            onChange={handleChange}
-            className="w-full p-3 rounded-md border border-[#B6D5C8] text-[#436E6C] bg-white focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
-          >
-            <option value="">Seleccioná un servicio</option>
-            {servicios.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
-          <div className="w-full">
-            <DatePicker
-              selected={form.fecha}
-              onChange={handleDateChange}
-              filterDate={isWeekday}
-              dateFormat="dd/MM/yyyy"
-              locale={es}
-              placeholderText="Seleccioná una fecha"
-              minDate={new Date()}
-              className="block w-full px-4 py-2 border border-[#B6D5C8] rounded-md text-[#436E6C] bg-white focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
-              wrapperClassName="w-full"
-            />
-          </div>
-
-          <select
-            name="horario"
-            value={form.horario}
-            onChange={handleChange}
-            className="w-full p-3 rounded-md border border-[#B6D5C8] text-[#436E6C] bg-white focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
-          >
-            <option value="">Seleccioná un horario</option>
-            {horarios.map((h) => (
-              <option key={h} value={h}>{h}</option>
-            ))}
-          </select>
-
-          <button
-            type="submit"
-            className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition"
-          >
-            Confirmar turno
-          </button>
-
-          {tipoMensaje === 'error' && mensaje && (
-            <div className="mt-2 text-sm bg-red-100 text-red-700 px-4 py-2 rounded-md">
-              {mensaje}
-            </div>
-          )}
-        </form>
-      </div>
-
-  
-      {mostrarModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm mx-auto text-center">
-            <p className="text-sm text-green-700 mb-4">{mensaje}</p>
-            <button
-              onClick={() => setMostrarModal(false)}
-              className="bg-[#436E6C] text-white px-4 py-2 rounded-md hover:bg-[#5A9A98] transition"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      )}
-    </section>
-  );
+interface Props {
+    onCreate: (nuevo: any) => void;
 }
+
+export default function ReservaTurno({ onCreate }: Props) {
+    const [services, setServices] = useState<{ _id: string; name: string }[]>([]);
+    const [date, setDate] = useState<Date | null>(null);
+    const [service, setService] = useState<string>('');
+
+    useEffect(() => {
+        const list = servicios.flatMap(cat =>
+            cat.services.map((s, idx) => ({
+                _id: `${cat.anchor}-${idx}`,
+                name: s.name
+            }))
+        );
+        setServices(list);
+    }, []);
+
+    const canSubmit = !!date && !!service;
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!canSubmit) return;
+        toast.promise(
+            createTurno({ date: date!.toISOString(), service }),
+            {
+                loading: 'Reservando turno…',
+                success: t => {
+                    onCreate(t);
+                    return 'Turno reservado 🎉';
+                },
+                error: err => `Error: ${err.message}`
+            }
+        );
+    };
+
+    return (
+        <form
+            onSubmit={handleSubmit}
+            className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-lg space-y-4"
+        >
+            <div>
+                <label className="block text-gray-700 mb-1">Fecha</label>
+                <DatePicker
+                    selected={date}
+                    onChange={d => setDate(d)}
+                    dateFormat="dd/MM/yyyy"
+                    className="w-full px-3 py-2 border rounded"
+                    placeholderText="Selecciona día"
+                />
+            </div>
+
+            <div>
+                <label className="block text-gray-700 mb-1">Hora</label>
+                <DatePicker
+                    selected={date}
+                    onChange={d => setDate(d)}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeIntervals={30}
+                    timeCaption="Hora"
+                    dateFormat="h:mm aa"
+                    className="w-full px-3 py-2 border rounded"
+                    placeholderText="Selecciona hora"
+                />
+            </div>
+
+            <div>
+                <label className="block text-gray-700 mb-1">Servicio</label>
+                <select
+                    value={service}
+                    onChange={e => setService(e.target.value)}
+                    className="w-full px-3 py-2 border rounded"
+                >
+                    <option value="">-- selecciona --</option>
+                    {services.map(s => (
+                        <option key={s._id} value={s._id}>
+                            {s.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            <button
+                type="submit"
+                disabled={!canSubmit}
+                className={`w-full py-2 rounded text-white ${
+                    canSubmit ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'
+                }`}
+            >
+                Reservar turno
+            </button>
+        </form>
+    );
+}
+
