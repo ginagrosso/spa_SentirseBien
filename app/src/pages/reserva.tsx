@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -19,7 +17,7 @@ export default function Reserva() {
   const servicioId = searchParams?.get('servicio');
   const { user, token } = useAuth();
 
-  const [, setServicio] = useState<Servicio | null>(null);
+  const [servicio, setServicio] = useState<Servicio | null>(null);
   const [formData, setFormData] = useState({
     nombre: user?.nombre || '',
     email: user?.email || '',
@@ -41,14 +39,25 @@ export default function Reserva() {
   // Fetch service details
   useEffect(() => {
     if (servicioId) {
+      setLoading(true);
       fetch(`/api/servicios/${servicioId}`)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error('Error al cargar el servicio');
+          return res.json();
+        })
         .then(data => {
           setServicio(data);
-          setFormData(prev => ({ ...prev, servicio: data.nombre }));
+          setFormData(prev => ({
+            ...prev,
+            servicio: data.nombre || data.name || ''
+          }));
         })
         .catch(err => {
           console.error('Error fetching service:', err);
+          setMensaje('No se pudo cargar la información del servicio. Por favor, intenta nuevamente.');
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [servicioId]);
@@ -99,6 +108,9 @@ export default function Reserva() {
   if (!token) {
     return null; // Don't render anything while redirecting
   }
+
+  // Get today's date in ISO format (YYYY-MM-DD) for date input min attribute
+  const today = new Date().toISOString().split('T')[0];
 
   return (
     <div className="min-h-screen bg-[#F5F9F8] py-12 px-4 sm:px-6 lg:px-8">
@@ -191,6 +203,7 @@ export default function Reserva() {
                 <input
                   type="date"
                   required
+                  min={today}
                   value={formData.fecha}
                   onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
                   className="w-full p-3 rounded-lg border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
@@ -207,6 +220,8 @@ export default function Reserva() {
                 <input
                   type="time"
                   required
+                  min="09:00"
+                  max="19:00"
                   value={formData.horario}
                   onChange={(e) => setFormData({ ...formData, horario: e.target.value })}
                   className="w-full p-3 rounded-lg border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
