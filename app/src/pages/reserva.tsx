@@ -1,27 +1,25 @@
+// src/pages/reserva.tsx
 'use client';
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import TurnosLayout from '../components/turnos/TurnosLayout';
 import TurnoForm from '../components/turnos/TurnoForm';
 
 export default function ReservaPage() {
     const router = useRouter();
 
-    // Debe terminar en "Action"
+    // Debe acabar en "Action" para cumplir con Next.js
     const handleNuevoTurnoAction = (_nuevo: any) => {
         router.push('/turnos');
     };
 
     return (
-        <>
-            <Header />
-            <main className="max-w-2xl mx-auto py-8">
-                <h1 className="text-3xl font-bold mb-6">Reservar un turno</h1>
-                <TurnoForm onCreateAction={handleNuevoTurnoAction} />
-            </main>
-            <Footer />
-        </>
+        <TurnosLayout
+            title="Reservar un turno"
+            description="Elige servicio y fecha"
+        >
+            <TurnoForm onCreateAction={handleNuevoTurnoAction} />
+        </TurnosLayout>
     );
 }
