@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { getTurnos, updateTurno, deleteTurno, Turno } from '../lib/turnosClient';
+import { getTurnos, updateTurno, deleteTurno, Turno } from 'lib/turnos.api';
 
 export default function MisTurnosPage() {
     const [turnos, setTurnos] = useState<Turno[]>([]);
