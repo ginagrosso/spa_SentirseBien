@@ -36,7 +36,7 @@ export default function LoginPage() {
       console.log("API response status:", res.status);
       console.log("API response data:", data);
       console.log("User from API:", data.user);
-      console.log("User role from API:", data.user?.rol || data.user?.role);
+      console.log("User role from API:", data.user?.rol);
 
       if (res.ok) {
         // Store user data
@@ -44,8 +44,8 @@ export default function LoginPage() {
         await login(data.token, data.user);
         console.log("Context updated with user data");
 
-        // Check user role for redirection - handle both field names
-        const userRole = data.user?.rol || data.user?.role;
+        // Check user role for redirection
+        const userRole = data.user?.rol;
         console.log(`Redirecting based on role: "${userRole}"`);
 
         console.log("Checking role:", userRole, "Type:", typeof userRole);
@@ -55,10 +55,10 @@ export default function LoginPage() {
         setTimeout(() => {
           if (String(userRole).toLowerCase() === 'admin') {
             console.log("ADMIN USER CONFIRMED - redirecting to dashboard");
-            window.location.href = '/admin/dashboard';
+            router.push('/admin/dashboard');
           } else {
             console.log("Regular user confirmed - redirecting to reserva");
-            window.location.href = '/reserva';
+            router.push('/reserva');
           }
         }, 300);
       } else {
@@ -131,7 +131,7 @@ export default function LoginPage() {
           {process.env.NODE_ENV === 'development' && (
             <div className="mt-4 p-2 border border-gray-300 text-xs bg-gray-50">
               <p>Debug info - current authentication state:</p>
-              <pre>{user ? `Logged in as: ${user.email} (${user.rol || user.rol})` : 'Not logged in'}</pre>
+              <pre>{user ? `Logged in as: ${user.email} (${user.rol})` : 'Not logged in'}</pre>
             </div>
           )}
         </div>

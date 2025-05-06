@@ -41,7 +41,8 @@ export function isAdmin(
 ) {
   authenticate(req, res, () => {
     // After authentication, check if user has admin role
-    if (req.user && req.user.role === 'admin') {
+    // Before (in middleware/auth.ts)
+    if (req.user && req.user.rol === 'admin') {  // This is correct
       next();
     } else {
       return res.status(403).json({ error: 'Acceso denegado. Se requieren permisos de administrador.' });
