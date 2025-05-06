@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 export default function Footer() {
   return (
     <footer className="bg-primary text-soft py-12 font-roboto w-full relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-5"></div>
       <div className="w-full px-4 max-w-6xl mx-auto relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-center items-start">
           <motion.div

@@ -7,9 +7,10 @@ interface PageHeroProps {
   backgroundImage?: string;
 }
 
-export default function PageHero({ title, description, backgroundImage = '/images/decoration2.png' }: PageHeroProps) {
+export default function PageHero({ title, description, backgroundImage = '/images/heropages.png' }: PageHeroProps) {
   return (
-    <section className="relative bg-gradient-to-b from-[#F5F9F8] to-white text-primary font-roboto pt-24 pb-10 px-2 text-center overflow-hidden mt-12">
+    <section className="relative bg-gradient-to-b from-[#F5F9F8] to-white text-primary font-roboto pt-32 pb-10 px-2 text-center overflow-hidden mt-0">
+
       <div className="absolute inset-0">
         <Image
           src={backgroundImage}
@@ -18,8 +19,11 @@ export default function PageHero({ title, description, backgroundImage = '/image
           className="object-cover opacity-30"
         />
       </div>
+      
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/80 to-transparent h-40"></div>
+      
       <motion.div 
-        className="relative z-10 max-w-3xl mx-auto"
+        className="relative z-10 max-w-4xl mx-auto"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -36,4 +40,4 @@ export default function PageHero({ title, description, backgroundImage = '/image
       </motion.div>
     </section>
   );
-} 
+}

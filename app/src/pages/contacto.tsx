@@ -41,8 +41,7 @@ export default function Contacto() {
       
       <PageHero 
         title="Contactanos"
-        description="¿Tenés dudas o querés saber más? Escribinos y te responderemos a la brevedad. Estamos aquí para ayudarte en tu camino hacia el bienestar."
-        backgroundImage="/images/decoration2.png"
+        description="¿Tenés dudas o querés saber más? Escribinos y te responderemos a la brevedad."
       />
 
       <main className="relative min-h-screen font-roboto">

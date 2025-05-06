@@ -32,7 +32,6 @@ export default function HomePage() {
       </section>
 
       <section className="pt-16 pb-20 px-4 bg-gradient-to-b from-white via-white to-[#F5F9F8] relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-5"></div>
         <h2 className="text-4xl font-lora font-bold text-center mb-16 text-primary relative">
           <span className="relative z-10">¿Por qué elegirnos?</span>
           <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-accent/30 rounded-full"></div>

@@ -10,7 +10,7 @@ interface HeaderProps {
   transparent?: boolean;
 }
 
-export default function Header({ transparent = false }: HeaderProps) {
+export default function Header({ transparent = true }: HeaderProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -51,9 +51,9 @@ export default function Header({ transparent = false }: HeaderProps) {
             : 'bg-transparent'
           : 'bg-primary/90 backdrop-blur-md border-b border-primary/20 shadow-lg'
       }`}
-      initial={{ y: -100 }}
+      initial={{ y: 0 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.2 }}
     >
       <div className="container mx-auto px-6 md:px-14 py-3 flex items-center justify-between">
         <motion.div 
