@@ -1,4 +1,4 @@
-// src/lib/turnosClient.ts
+// src/lib/turnos.api.ts
 import { apiRequest } from './apiClient';
 
 export interface TurnoPayload {
