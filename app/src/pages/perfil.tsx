@@ -1,7 +1,7 @@
-'use client';
-
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import { User, Mail, Phone, MapPin, Edit2, Save, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -17,23 +17,39 @@ export default function PerfilPage() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState<UserProfile | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     // Check if user is logged in
     const isLoggedIn = localStorage.getItem('spa-logueado') === 'true';
     if (!isLoggedIn) {
-      window.location.href = '/login';
+      router.push('/login');
       return;
     }
 
     // Fetch user profile data
-    fetch('/api/perfil')
-      .then(res => res.json())
+    const token = localStorage.getItem('spa-token');
+    fetch('/api/perfil', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('No se pudo cargar el perfil');
+        }
+        return res.json();
+      })
       .then(data => {
         setProfile(data);
         setEditData(data);
+        setError(null);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error('Error al cargar perfil:', err);
+        setError('No se pudo cargar el perfil. Intente nuevamente.');
+
         // Fallback mock data if API fails
         const mockData = {
           nombre: 'Usuario',
@@ -45,25 +61,36 @@ export default function PerfilPage() {
         setEditData(mockData);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [router]);
 
   const handleSave = async () => {
     if (!editData) return;
 
     setLoading(true);
+    setError(null);
+
     try {
+      const token = localStorage.getItem('spa-token');
       const res = await fetch('/api/perfil', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(editData),
       });
 
       if (res.ok) {
-        setProfile(editData);
+        const updatedData = await res.json();
+        setProfile(updatedData);
         setEditing(false);
+      } else {
+        const errorData = await res.json();
+        setError(errorData.error || 'No se pudo actualizar el perfil');
       }
     } catch (error) {
       console.error('Error al guardar perfil:', error);
+      setError('Error de conexión. Intente nuevamente.');
     } finally {
       setLoading(false);
     }
@@ -106,6 +133,12 @@ export default function PerfilPage() {
             </div>
           ) : (
             <>
+              {error && (
+                <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
+                  {error}
+                </div>
+              )}
+
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-amiri">Información Personal</h2>
                 {!editing ? (
@@ -228,6 +261,8 @@ export default function PerfilPage() {
           )}
         </div>
       </motion.main>
+
+      <Footer />
     </>
   );
 }

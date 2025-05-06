@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from 'lib/prisma';
-import bcrypt from 'bcryptjs';
+import { UserModel } from '../../models/User';
+import dbConnect from '../../lib/dbConnect';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -14,20 +14,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    // Connect to MongoDB
+    await dbConnect();
+
+    // Check if user exists
+    const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'El usuario ya existe.' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        nombre,
-        telefono
-      },
+    // Create new user
+    // Note: Password hashing is handled by the pre-save middleware we created earlier
+    await UserModel.create({
+      email,
+      password,
+      nombre,
+      telefono
     });
 
     return res.status(201).json({ mensaje: 'Usuario registrado con éxito.' });

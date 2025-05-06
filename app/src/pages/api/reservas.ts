@@ -1,27 +1,32 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from 'lib/prisma';
-import { authenticate } from '../../middleware/auth';
+import dbConnect from '../../lib/dbConnect';
+import { ServiceModel } from '../../models/Service';
+import { ReservationModel } from '../../models/Reservation';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  authenticate(req, res, async () => {
-    if (req.method === 'POST') {
-      const { nombre, email, servicio, fecha, horario } = req.body;
+  await dbConnect();
 
-      if (!nombre || !email || !servicio || !fecha || !horario) {
-        return res.status(400).json({ error: 'Faltan datos en el formulario.' });
-      }
+  if (req.method === 'GET') {
+    const reservas = await ReservationModel.find().populate('service');
+    return res.status(200).json(reservas);
+  }
 
-      try {
-        await prisma.reserva.create({
-          data: { nombre, email, servicio, fecha, horario },
-        });
-        return res.status(201).json({ mensaje: 'Reserva realizada con éxito.' });
-      } catch (error) {
-        console.error('Error al crear la reserva:', error);
-        return res.status(500).json({ error: 'Error al procesar la reserva.' });
-      }
+  if (req.method === 'POST') {
+    const { userId, serviceId, date } = req.body;
+
+    if (!userId || !serviceId || !date) {
+      return res.status(400).json({ error: 'Faltan datos en el formulario.' });
     }
 
-    return res.status(405).json({ error: 'Método no permitido.' });
-  });
+    try {
+      const nueva = await ReservationModel.create({ userId, service: serviceId, date });
+      return res.status(201).json(nueva);
+    } catch (error) {
+      console.error('Error al crear la reserva:', error);
+      return res.status(500).json({ error: 'Error al procesar la reserva.' });
+    }
+  }
+
+  res.setHeader('Allow', ['GET', 'POST']);
+  res.status(405).end(`Method ${req.method} Not Allowed`);
 }
