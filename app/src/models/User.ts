@@ -1,40 +1,53 @@
-import mongoose from 'mongoose';
-import { IUser } from '@/types/user';
+import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const userSchema = new mongoose.Schema<IUser>({
-    name: {
-        type: String,
-        required: [true, 'El nombre es requerido']
-    },
-    email: {
-        type: String,
-        required: [true, 'El email es requerido'],
-        unique: true,
-        lowercase: true,
-        trim: true
-    },
-    password: {
-        type: String,
-        required: [true, 'La contraseña es requerida'],
-        minlength: [6, 'La contraseña debe tener al menos 6 caracteres']
-    },
-    role: {
-        type: String,
-        enum: ['user', 'admin'],
-        default: 'user'
-    }
-}, {
-    timestamps: true
-});
+export interface IUser extends Document {
+    email: string;
+    password: string;
+    nombre: string;
+    telefono: string;
+    rol: 'admin' | 'user';
+    createdAt: Date;
+    updatedAt: Date;
+    comparePassword(candidatePassword: string): Promise<boolean>;
+}
 
-// Método para comparar contraseñas
-userSchema.methods.comparePassword = async function(candidatePassword: string) {
-    return bcrypt.compare(candidatePassword, this.password);
-};
+const UserSchema = new Schema<IUser>(
+    {
+        email: {
+            type: String,
+            required: [true, 'Email es requerido'],
+            unique: true,
+            trim: true,
+            lowercase: true
+        },
+        password: {
+            type: String,
+            required: [true, 'Contraseña es requerida'],
+            minlength: [6, 'La contraseña debe tener al menos 6 caracteres']
+        },
+        nombre: {
+            type: String,
+            required: [true, 'Nombre es requerido'],
+            trim: true
+        },
+        telefono: {
+            type: String,
+            trim: true
+        },
+        rol: {
+            type: String,
+            enum: ['admin', 'user'],
+            default: 'user'
+        }
+    },
+    {
+        timestamps: true
+    }
+);
 
 // Middleware para hashear la contraseña antes de guardar
-userSchema.pre('save', async function(next) {
+UserSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
     
     try {
@@ -46,8 +59,13 @@ userSchema.pre('save', async function(next) {
     }
 });
 
+// Método para comparar contraseñas
+UserSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
+    return bcrypt.compare(candidatePassword, this.password);
+};
+
 // Índices para mejorar el rendimiento de las consultas
 // userSchema.index({ email: 1 });
-userSchema.index({ role: 1 });
+UserSchema.index({ rol: 1 });
 
-export const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
+export const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);

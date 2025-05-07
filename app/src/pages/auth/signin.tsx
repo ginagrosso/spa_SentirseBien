@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import PageHero from '@/components/PageHero';
@@ -9,11 +9,14 @@ export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const { data: session, status } = useSession();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+        setIsLoading(true);
 
         try {
             const result = await signIn('credentials', {
@@ -24,13 +27,37 @@ export default function SignIn() {
 
             if (result?.error) {
                 setError(result.error);
+                setIsLoading(false);
+                return;
+            }
+
+            // Esperar a que la sesión se actualice
+            const response = await fetch('/api/auth/session');
+            const sessionData = await response.json();
+            
+            if (sessionData?.user?.rol === 'admin') {
+                router.push('/admin/dashboard');
             } else {
                 router.push('/');
             }
         } catch (error) {
+            console.error('Login error:', error);
             setError('Ocurrió un error al iniciar sesión');
+            setIsLoading(false);
         }
     };
+
+    // Si está cargando o ya autenticado, mostrar un estado de carga
+    if (status === 'loading' || status === 'authenticated' || isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Cargando...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -61,6 +88,7 @@ export default function SignIn() {
                                     placeholder="tu@email.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    disabled={isLoading}
                                 />
                             </div>
                             <div>
@@ -76,6 +104,7 @@ export default function SignIn() {
                                     placeholder="••••••••"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    disabled={isLoading}
                                 />
                             </div>
 
@@ -87,9 +116,10 @@ export default function SignIn() {
 
                             <button
                                 type="submit"
-                                className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition-colors duration-300 font-medium"
+                                className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition-colors duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={isLoading}
                             >
-                                Iniciar Sesión
+                                {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
                             </button>
 
                             <div className="text-center text-sm text-[#436E6C]">

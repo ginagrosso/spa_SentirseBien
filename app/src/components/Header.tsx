@@ -5,17 +5,22 @@ import Link from 'next/link';
 import { User, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 interface HeaderProps {
   transparent?: boolean;
 }
 
 export default function Header({ transparent = true }: HeaderProps) {
-  const { user, isAuthenticated, logout, isAdmin } = useAuth();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isAuthenticated = status === 'authenticated';
+  const isAdmin = user?.rol === 'admin';
   const [showMenu, setShowMenu] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,14 +31,14 @@ export default function Header({ transparent = true }: HeaderProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await signOut({ redirect: true, callbackUrl: '/auth/signin' });
     setShowMenu(false);
   };
 
   const handleUserClick = () => {
     if (!isAuthenticated) {
-      window.location.href = '/auth/signin';
+      router.push('/auth/signin');
     } else {
       setShowMenu(!showMenu);
     }
@@ -48,7 +53,7 @@ export default function Header({ transparent = true }: HeaderProps) {
   ];
 
   if (isAdmin) {
-    navLinks.push({ href: '/admin', label: 'ADMIN' });
+    navLinks.push({ href: '/admin/dashboard', label: 'ADMIN' });
   }
 
   return (

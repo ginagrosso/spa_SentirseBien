@@ -1,17 +1,18 @@
 // pages/admin/dashboard.tsx
 import AdminLayout from '../../components/AdminLayout';
-import { useAuth } from '../../context/AuthContext';
+import { useSession } from 'next-auth/react';
 import { motion } from 'framer-motion';
 import { Calendar, Users, DollarSign, Settings } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { data: session } = useSession();
+  const user = session?.user;
 
   return (
     <AdminLayout>
       <div className="mb-8">
         <h1 className="text-3xl font-lora font-semibold text-primary">Panel de Administración</h1>
-        <p className="text-[#436E6C]/80">Bienvenido, {user?.nombre}</p>
+        <p className="text-[#436E6C]/80">Bienvenido, {user?.name}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

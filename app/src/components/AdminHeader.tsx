@@ -1,11 +1,12 @@
 'use client';
 
-import { useAuth } from '../context/AuthContext';
+import { useSession } from 'next-auth/react';
 import { Bell, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function AdminHeader() {
-  const { user } = useAuth() as { user?: { nombre?: string; rol?: string } };
+  const { data: session } = useSession();
+  const user = session?.user;
 
   return (
     <motion.div
@@ -26,7 +27,7 @@ export default function AdminHeader() {
               <User size={20} />
             </div>
             <div>
-              <p className="text-sm font-medium text-[#436E6C]">{user?.nombre}</p>
+              <p className="text-sm font-medium text-[#436E6C]">{user?.name}</p>
               <p className="text-xs text-gray-500">{user?.rol}</p>
             </div>
           </div>

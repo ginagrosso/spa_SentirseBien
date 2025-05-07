@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Footer from '../components/Footer';
 import PageHero from '../components/PageHero';
-import Servicios from '../components/Servicios';
+import ServiceList from '../components/services/ServiceList';
 import { IService } from '../models/Service';
 
 // Create a simpler interface for frontend display
@@ -77,7 +77,7 @@ export default function ServiciosPage() {
         <p className="text-center mt-8 text-red-500">{error}</p>
       )}
       {!loading && !error && services.length > 0 && (
-        <Servicios services={services} />
+        <ServiceList services={services} />
       )}
       {!loading && !error && services.length === 0 && (
         <div className="text-center mt-10 p-4">

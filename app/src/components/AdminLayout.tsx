@@ -13,8 +13,8 @@ import {
   FiMenu
 } from 'react-icons/fi';
 import Image from 'next/image';
-import { useAuth } from '../context/AuthContext';
 import AdminHeader from './AdminHeader';
+import { useSession, signOut } from 'next-auth/react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -23,10 +23,12 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const router = useRouter();
-  const { user, logout, isLoading } = useAuth();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoading = status === 'loading';
 
   if (!isLoading && (!user || user.rol !== 'admin')) {
-    router.push('/login');
+    router.push('/auth/signin');
     return null;
   }
 
@@ -46,9 +48,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { icon: FiBarChart2, label: 'Reportes', path: '/admin/reportes' },
   ];
 
-  const handleLogout = () => {
-    logout();
-    router.push('/login');
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    router.push('/auth/signin');
   };
 
   return (

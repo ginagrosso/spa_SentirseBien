@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import ProtectedLayout from '@/components/ProtectedLayout';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 
 export default function ProfilePage() {
-    const { user } = useAuth();
+    const { data: session } = useSession();
+    const user = session?.user;
     const [name, setName] = useState(user?.name || '');
     const [email, setEmail] = useState(user?.email || '');
     const [currentPassword, setCurrentPassword] = useState('');

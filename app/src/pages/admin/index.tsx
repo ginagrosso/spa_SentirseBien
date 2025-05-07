@@ -1,8 +1,9 @@
 import ProtectedLayout from '@/components/ProtectedLayout';
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from 'next-auth/react';
 
 export default function AdminPage() {
-    const { user } = useAuth();
+    const { data: session } = useSession();
+    const user = session?.user;
 
     return (
         <ProtectedLayout requireAdmin>

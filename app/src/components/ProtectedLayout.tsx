@@ -1,4 +1,4 @@
-import { useAuth } from '@/hooks/useAuth';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
@@ -8,16 +8,22 @@ interface ProtectedLayoutProps {
 }
 
 export default function ProtectedLayout({ children, requireAdmin = false }: ProtectedLayoutProps) {
-    const { isAuthenticated, isLoading, isAdmin } = useAuth();
+    const { data: session, status } = useSession();
     const router = useRouter();
+    const user = session?.user;
+    const isLoading = status === 'loading';
+    const isAuthenticated = status === 'authenticated';
+    const isAdmin = user?.rol === 'admin';
 
     useEffect(() => {
         if (!isLoading && !isAuthenticated) {
             router.push('/auth/signin');
+            return;
         }
 
         if (!isLoading && requireAdmin && !isAdmin) {
             router.push('/');
+            return;
         }
     }, [isLoading, isAuthenticated, isAdmin, requireAdmin, router]);
 

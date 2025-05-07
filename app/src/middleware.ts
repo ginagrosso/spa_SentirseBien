@@ -8,7 +8,7 @@ export default withAuth(
         const path = req.nextUrl.pathname;
 
         // Rutas que requieren rol de admin
-        if (path.startsWith('/admin') && token?.role !== 'admin') {
+        if (path.startsWith('/admin') && token?.rol !== 'admin') {
             return NextResponse.redirect(new URL('/', req.url));
         }
 

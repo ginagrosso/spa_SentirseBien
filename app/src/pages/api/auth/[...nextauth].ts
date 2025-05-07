@@ -4,9 +4,23 @@ import { compare } from 'bcryptjs';
 import { User } from '@/models/User';
 import dbConnect from '@/lib/dbConnect';
 
+declare module 'next-auth' {
+    interface User {
+        rol: string;
+    }
+    interface Session {
+        user: {
+            id: string;
+            email: string;
+            name: string;
+            rol: string;
+        }
+    }
+}
+
 declare module 'next-auth/jwt' {
     interface JWT {
-        role: 'user' | 'admin';
+        rol: string;
     }
 }
 
@@ -24,12 +38,12 @@ export default NextAuth({
                 }
 
                 try {
-                    // Ensure MongoDB connection is established
                     await dbConnect();
                     
                     console.log('Searching for user with email:', credentials.email);
-                    const user = await User.findOne({ email: credentials.email });
+                    const user = await User.findOne({ email: credentials.email }).select('+password');
                     console.log('User found:', !!user);
+                    console.log('User data:', JSON.stringify(user, null, 2));
 
                     if (!user) {
                         throw new Error('No existe una cuenta con este email');
@@ -41,12 +55,15 @@ export default NextAuth({
                         throw new Error('Contraseña incorrecta');
                     }
 
-                    return {
+                    const userData = {
                         id: user._id.toString(),
                         email: user.email,
-                        name: user.name,
-                        role: user.role
+                        name: user.nombre,
+                        rol: user.rol || 'user'
                     };
+
+                    console.log('Returning user data:', userData);
+                    return userData;
                 } catch (error) {
                     console.error('Authentication error:', error);
                     throw error;
@@ -54,25 +71,31 @@ export default NextAuth({
             }
         })
     ],
-    session: {
-        strategy: 'jwt'
-    },
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                (token as any).role = (user as any).role;
+                token.rol = user.rol;
+                console.log('JWT Callback - Setting rol from user:', user.rol);
             }
+            console.log('JWT Callback - Final token:', token);
             return token;
         },
         async session({ session, token }) {
             if (session?.user) {
-                (session.user as any).role = token.role;
+                session.user.rol = token.rol;
+                console.log('Session Callback - Setting rol from token:', token.rol);
             }
+            console.log('Session Callback - Final session:', session);
             return session;
         }
     },
     pages: {
         signIn: '/auth/signin',
         error: '/auth/error'
-    }
+    },
+    session: {
+        strategy: 'jwt',
+        maxAge: 30 * 24 * 60 * 60, // 30 días
+    },
+    debug: true
 }); 
