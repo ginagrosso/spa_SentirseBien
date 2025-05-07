@@ -25,13 +25,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter();
   const { user, logout, isLoading } = useAuth();
 
-  // Redirigir si no hay usuario o no es admin
   if (!isLoading && (!user || user.rol !== 'admin')) {
     router.push('/login');
     return null;
   }
 
-  // Mostrar loading mientras se verifica la autenticación
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F5F9F8]">
@@ -55,7 +53,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="flex min-h-screen bg-[#F5F9F8]">
-      {/* Sidebar */}
+
       <motion.aside
         initial={{ width: 0 }}
         animate={{ width: isSidebarOpen ? 280 : 80 }}
@@ -141,7 +139,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </motion.button>
       </motion.aside>
 
-      {/* Main Content */}
       <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-[280px]' : 'ml-[80px]'}`}>
         <AdminHeader />
         <div className="p-8">
