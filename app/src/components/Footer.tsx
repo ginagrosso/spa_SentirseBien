@@ -1,14 +1,15 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Facebook, Instagram, MapPin, Phone, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Footer() {
   return (
     <footer className="bg-primary text-soft py-12 font-roboto w-full relative overflow-hidden">
-      <div className="w-full px-4 max-w-6xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-center items-start">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 text-center items-start">
           <motion.div
             className="flex flex-col items-center"
             initial={{ opacity: 0, y: 20 }}
@@ -51,7 +52,7 @@ export default function Footer() {
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <a
+                  <Link
                     href={link.href}
                     className="relative px-1 py-0.5 transition-all duration-300 text-soft2 hover:text-accent
                       before:content-[''] before:absolute before:left-0 before:-bottom-0.5 before:w-0 before:h-[2px]
@@ -59,7 +60,7 @@ export default function Footer() {
                       hover:before:w-full"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </motion.li>
               ))}
             </ul>
@@ -74,17 +75,17 @@ export default function Footer() {
           >
             <h3 className="text-base font-lora font-semibold mb-4 text-accent">Contacto</h3>
             <ul className="space-y-3 text-sm">
-              <li className="flex items-center gap-2 text-soft2">
-                <MapPin className="w-4 h-4 text-accent" />
-                <span>Av. Siempreviva 742</span>
+              <li className="flex items-center justify-center gap-2 text-soft2">
+                <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
+                <span className="break-words">Av. Siempreviva 742</span>
               </li>
-              <li className="flex items-center gap-2 text-soft2">
-                <Phone className="w-4 h-4 text-accent" />
+              <li className="flex items-center justify-center gap-2 text-soft2">
+                <Phone className="w-4 h-4 text-accent flex-shrink-0" />
                 <span>+54 11 1234-5678</span>
               </li>
-              <li className="flex items-center gap-2 text-soft2">
-                <Mail className="w-4 h-4 text-accent" />
-                <span>info@sentirsebien.com</span>
+              <li className="flex items-center justify-center gap-2 text-soft2">
+                <Mail className="w-4 h-4 text-accent flex-shrink-0" />
+                <span className="break-words">info@sentirsebien.com</span>
               </li>
             </ul>
           </motion.div>
@@ -105,8 +106,8 @@ export default function Footer() {
                 className="group rounded-full p-2 transition-all duration-300 hover:bg-accent/30"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
+                aria-label="Seguinos en Instagram"
               >
-                {/* suppress XmlDeprecatedElement */}
                 <Instagram className="w-6 h-6 group-hover:text-accent transition-colors duration-300" />
               </motion.a>
               <motion.a
@@ -116,8 +117,8 @@ export default function Footer() {
                 className="group rounded-full p-2 transition-all duration-300 hover:bg-accent/30"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
+                aria-label="Seguinos en Facebook"
               >
-                {/* suppress XmlDeprecatedElement */}
                 <Facebook className="w-6 h-6 group-hover:text-accent transition-colors duration-300" />
               </motion.a>
             </div>
@@ -131,7 +132,7 @@ export default function Footer() {
           transition={{ duration: 0.5, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          © 2025 Sentirse Bien. Todos los derechos reservados.
+          © {new Date().getFullYear()} Sentirse Bien. Todos los derechos reservados.
         </motion.div>
       </div>
 
@@ -141,6 +142,7 @@ export default function Footer() {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1440 80"
           preserveAspectRatio="none"
+          aria-hidden="true"
         >
           <path
             fill="#F5F9F8"

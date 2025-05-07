@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageHero from '../components/PageHero';
 import Servicios from '../components/Servicios';
@@ -67,7 +66,6 @@ export default function ServiciosPage() {
 
   return (
     <>
-      <Header transparent={true} />
       <PageHero
         title="Nuestros Servicios"
         description="Descubrí todos los tratamientos que Sentirse Bien tiene para vos."

@@ -1,7 +1,5 @@
 'use client';
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import PageHero from '../components/PageHero';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -9,7 +7,6 @@ import { motion } from 'framer-motion';
 export default function ConocenosPage() {
   return (
     <>
-      <Header />
       <PageHero 
         title="Conócenos"
         description="Sumérgete en la historia de Sentirse Bien y descubre la pasión que nos mueve día a día."
@@ -118,8 +115,6 @@ export default function ConocenosPage() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </>
   );
 }
