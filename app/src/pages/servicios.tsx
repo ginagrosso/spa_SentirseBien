@@ -35,26 +35,9 @@ export default function ServiciosPage() {
       })
       .then((data) => {
         console.log('Datos recibidos:', data);
+        setServices(data);
         setRawData(data);
-        
-        if (Array.isArray(data) && data.length > 0) {
-          const formattedServices = data.map(servicio => ({
-            _id: servicio._id,
-            name: servicio.nombre || servicio.name,
-            description: servicio.descripcion || servicio.description,
-            price: servicio.precio || servicio.price,
-            duration: servicio.duracion || servicio.duration,
-            category: servicio.categoria || servicio.category || 'General',
-            image: servicio.imagen || servicio.image || '/images/default-service.jpg',
-            available: true
-          }));
-          
-          console.log('Servicios formateados:', formattedServices);
-          setServices(formattedServices);
-        } else {
-          console.error('No hay datos de servicios o formato incorrecto');
-          setError('No se encontraron servicios disponibles.');
-        }
+        setError(null);
       })
       .catch((e) => {
         console.error('Error cargando servicios:', e);
