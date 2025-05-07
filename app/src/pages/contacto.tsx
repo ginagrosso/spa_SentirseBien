@@ -1,7 +1,5 @@
 'use client';
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import PageHero from '../components/PageHero';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -37,8 +35,6 @@ export default function Contacto() {
 
   return (
     <>
-      <Header />
-      
       <PageHero 
         title="Contactanos"
         description="¿Tenés dudas o querés saber más? Escribinos y te responderemos a la brevedad."
@@ -191,8 +187,6 @@ export default function Contacto() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </>
   );
 }

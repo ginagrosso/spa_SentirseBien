@@ -1,183 +1,171 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { validations } from '@/lib/validations';
 import { ClockIcon, CalendarIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { apiRequest } from '../../lib/apiClient';
 import { createTurno, TurnoPayload } from '../../lib/turnos.api';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { turnoSchema } from '@/lib/validations';
+import { ITurno } from '@/types/turno';
+import { IService } from '@/types/service';
+import { IProfessional } from '@/types/professional';
+import Calendar from '@/components/ui/Calendar';
+import TimeSlots from '@/components/ui/TimeSlots';
 
-interface Service {
+interface Professional {
   _id: string;
   name: string;
-  description?: string;
+}
+
+interface HorarioDisponible {
+  startTime: string;
+  endTime: string;
 }
 
 interface TurnoFormProps {
-  onCreateAction: (nuevo: any) => void;
+  onSubmit: (data: ITurno) => Promise<void>;
+  services: IService[];
+  professionals: IProfessional[];
+  existingAppointments: ITurno[];
 }
 
-export default function TurnoForm({ onCreateAction }: TurnoFormProps) {
-  const [services, setServices] = useState<Service[]>([]);
-  const [selectedService, setSelectedService] = useState<string>('');
-  const [date, setDate] = useState<Date | null>(null);
+export default function TurnoForm({ onSubmit, services, professionals, existingAppointments }: TurnoFormProps) {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<HorarioDisponible[]>([]);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [fetchingServices, setFetchingServices] = useState(true);
-  const [error, setError] = useState('');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch
+  } = useForm<ITurno>({
+    resolver: zodResolver(turnoSchema),
+    defaultValues: {
+      userId: session?.user?.id || '',
+      serviceId: '',
+      professionalId: '',
+      date: '',
+      time: ''
+    }
+  });
+
+  const selectedService = watch('serviceId');
+  const selectedProfessional = watch('professionalId');
 
   useEffect(() => {
-    const fetchServices = async () => {
-      setFetchingServices(true);
-      try {
-        const response = await apiRequest('/api/services');
-        const data = await response.json();
-        if (response.ok) {
-          setServices(data);
-        } else {
-          setError('Error al cargar servicios');
-          toast.error('No se pudieron cargar los servicios');
-        }
-      } catch (err) {
-        console.error('Error fetching services:', err);
-        setError('Error de conexión');
-        toast.error('Error de conexión al servidor');
-      } finally {
-        setFetchingServices(false);
-      }
-    };
+    if (selectedDate) {
+      // Aquí iría la lógica para obtener los horarios disponibles
+      // basado en la fecha seleccionada y los turnos existentes
+      const slots = getAvailableTimeSlots(selectedDate, existingAppointments);
+      setAvailableTimeSlots(slots);
+    }
+  }, [selectedDate, existingAppointments]);
 
-    fetchServices();
-  }, []);
-
-  const filterTimeOptions = (time: Date) => {
-    const hour = time.getHours();
-    return hour >= 8 && hour < 20;
+  const handleServiceChange = (serviceId: string) => {
+    setValue('serviceId', serviceId);
+    // Resetear otros campos cuando cambia el servicio
+    setValue('professionalId', '');
+    setSelectedDate(null);
+    setSelectedTimeSlot(null);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedService || !date) return;
+  const handleSubmitForm = async (data: ITurno) => {
+    if (!selectedDate || !selectedTimeSlot) return;
 
     setLoading(true);
     try {
-      const payload: TurnoPayload = {
-        service: selectedService,
-        date: date.toISOString(),
+      const turnoData = {
+        ...data,
+        date: format(selectedDate, 'yyyy-MM-dd'),
+        time: selectedTimeSlot
       };
-      const nuevo = await createTurno(payload);
-      toast.success('Turno reservado con éxito');
-      onCreateAction(nuevo);
-
-      // Reset form
-      setSelectedService('');
-      setDate(null);
-    } catch (err) {
-      console.error('Error creating appointment:', err);
-      toast.error('Error al reservar turno');
+      await onSubmit(turnoData);
+      router.push('/turnos');
+    } catch (error) {
+      console.error('Error al crear el turno:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const getServiceById = (id: string) => {
-    return services.find(s => s._id === id);
-  };
-
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Reserva tu turno</h2>
+    <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Servicio</label>
+        <select
+          {...register('serviceId')}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+        >
+          <option value="">Seleccione un servicio</option>
+          {services.map((service) => (
+            <option key={service._id} value={service._id}>
+              {service.name}
+            </option>
+          ))}
+        </select>
+        {errors.serviceId && (
+          <p className="mt-1 text-sm text-red-600">{errors.serviceId.message}</p>
+        )}
+      </div>
 
-      {error && (
-        <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md text-sm">
-          {error}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Profesional</label>
+        <select
+          {...register('professionalId')}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+          disabled={!selectedService}
+        >
+          <option value="">Seleccione un profesional</option>
+          {professionals.map((professional) => (
+            <option key={professional._id} value={professional._id}>
+              {professional.name}
+            </option>
+          ))}
+        </select>
+        {errors.professionalId && (
+          <p className="mt-1 text-sm text-red-600">{errors.professionalId.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Fecha</label>
+        <Calendar
+          selected={selectedDate}
+          onChange={setSelectedDate}
+          minDate={new Date()}
+          disabled={!selectedProfessional}
+        />
+      </div>
+
+      {selectedDate && availableTimeSlots.length > 0 && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Horario</label>
+          <TimeSlots
+            slots={availableTimeSlots}
+            selectedSlot={selectedTimeSlot}
+            onSelect={setSelectedTimeSlot}
+          />
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <label htmlFor="service" className="block text-sm font-medium text-gray-700">
-            Servicio
-          </label>
-          <div className="relative">
-            <SparklesIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-            <select
-              id="service"
-              value={selectedService}
-              onChange={e => setSelectedService(e.target.value)}
-              className="pl-10 w-full py-2.5 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-primary"
-              disabled={fetchingServices}
-            >
-              <option value="">Seleccione un servicio</option>
-              {services.map(s => (
-                <option key={s._id} value={s._id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          {selectedService && getServiceById(selectedService)?.description && (
-            <p className="text-sm text-gray-500 mt-1">{getServiceById(selectedService)?.description}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-            Fecha y hora (8:00 - 20:00)
-          </label>
-          <div className="relative">
-            <CalendarIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-            <DatePicker
-              id="date"
-              selected={date}
-              onChange={d => setDate(d)}
-              showTimeSelect
-              timeFormat="HH:mm"
-              timeIntervals={30}
-              dateFormat="dd/MM/yyyy HH:mm"
-              timeCaption="Hora"
-              className="pl-10 w-full py-2.5 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary focus:border-primary"
-              minDate={new Date()}
-              placeholderText="Seleccione fecha y hora"
-              filterTime={filterTimeOptions}
-              popperPlacement="bottom"
-              // Remove popperModifiers or use type assertion if needed
-            />
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          disabled={!selectedService || !date || loading}
-          className={`w-full flex items-center justify-center py-3 px-4 rounded-md text-white font-medium transition-all ${
-            !selectedService || !date || loading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-primary hover:bg-primary/90 active:scale-[0.98] shadow-md'
-          }`}
-        >
-          {loading ? (
-            <>
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Procesando...
-            </>
-          ) : (
-            <>
-              <ClockIcon className="h-5 w-5 mr-2" />
-              Reservar turno
-            </>
-          )}
-        </button>
-      </form>
-
-      <div className="mt-6 text-sm text-gray-500">
-        <p className="flex items-center">
-          <ClockIcon className="h-4 w-4 mr-1" />
-          Horario de atención: 8:00 - 20:00
-        </p>
-      </div>
-    </div>
+      <button
+        type="submit"
+        disabled={loading || !selectedDate || !selectedTimeSlot}
+        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+      >
+        {loading ? 'Procesando...' : 'Reservar turno'}
+      </button>
+    </form>
   );
 }

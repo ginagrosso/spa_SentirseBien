@@ -1,8 +1,6 @@
 'use client';
 
-import Header from '../components/Header';
 import Hero from '../components/Hero';
-import Footer from '../components/Footer';
 import ServicesSlider from '../components/Categorias';
 import { motion } from 'framer-motion';
 import { Leaf} from 'lucide-react';
@@ -10,7 +8,6 @@ import { Leaf} from 'lucide-react';
 export default function HomePage() {
   return (
     <div>
-      <Header transparent={true} />
       <Hero />
 
       <section className="relative z-20 py-16 px-4 bg-white text-center">
@@ -135,8 +132,6 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }
