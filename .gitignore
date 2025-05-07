@@ -65,4 +65,11 @@ next-env.d.ts
 tmp/
 
 # Debug files
-.pnpm-debug.log*mongosh-2.2.5-linux-x64*
+.pnpm-debug.log*
+
+# MongoDB Shell
+mongosh-2.2.5-linux-x64/
+mongosh-2.2.5-linux-x64.tgz
+
+# Next.js cache
+app/.next/cache/
