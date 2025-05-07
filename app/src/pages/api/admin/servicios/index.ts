@@ -7,7 +7,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     try {
-      // Solo devuelve servicios disponibles para el público
       const services = await ServiceModel.find({ available: true });
       return res.status(200).json(services);
     } catch (error) {

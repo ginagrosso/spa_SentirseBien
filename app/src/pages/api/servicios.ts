@@ -45,7 +45,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         created_at: new Date()
       };
 
-      const result = await db.collection('servicios').insertOne(newService);
+      const result = await mongoose.connection.collection('servicios').insertOne(newService);
       return res.status(201).json({
         _id: result.insertedId,
         ...newService
@@ -75,7 +75,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         updated_at: new Date()
       };
 
-      const result = await db.collection('servicios').findOneAndUpdate(
+      const result = await mongoose.connection.collection('servicios').findOneAndUpdate(
         { _id: new mongoose.Types.ObjectId(id as string) },
         { $set: updateData },
         { returnDocument: 'after' }
@@ -96,7 +96,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         return res.status(400).json({ error: 'ID del servicio es requerido' });
       }
 
-      const result = await db.collection('servicios').deleteOne({
+      const result = await mongoose.connection.collection('servicios').deleteOne({
         _id: new mongoose.Types.ObjectId(id as string)
       });
 

@@ -7,7 +7,7 @@ import PageHero from '../components/PageHero';
 import Servicios from '../components/Servicios';
 import { IService } from '../models/Service';
 
-// Create a simpler interface for frontend display
+
 interface IServiceDisplay {
   _id: any;
   name: string;
@@ -77,11 +77,11 @@ export default function ServiciosPage() {
       )}
       {error && (
         <p className="text-center mt-8 text-red-500">{error}</p>
-      )}
-      {!loading && !error && services.length > 0 && (
-        <Servicios services={services} />
-      )}
-      {!loading && !error && services.length === 0 && (
+            )}
+            {!loading && !error && services.length > 0 && (
+        <Servicios services={services as unknown as IService[]} />
+            )}
+            {!loading && !error && services.length === 0 && (
         <div className="text-center mt-10 p-4">
           <p className="text-amber-600">No hay servicios disponibles actualmente.</p>
           <details className="mt-4 text-left max-w-2xl mx-auto p-4 bg-gray-50 rounded">

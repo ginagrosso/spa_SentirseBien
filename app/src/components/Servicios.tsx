@@ -14,7 +14,7 @@ export default function Servicios({ services }: ServiciosProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 50000 });
 
-  // ✅ Validación: si services es undefined o no es array, mostramos mensaje de error
+  
   if (!services || !Array.isArray(services)) {
     return (
       <div className="text-center mt-10 text-red-500">
@@ -23,14 +23,14 @@ export default function Servicios({ services }: ServiciosProps) {
     );
   }
 
-  // ✅ Agrupar servicios por categoría
+
   const servicesGroupedByCategory = services.reduce((acc: Record<string, IService[]>, service) => {
     if (!acc[service.category]) acc[service.category] = [];
     acc[service.category].push(service);
     return acc;
   }, {});
 
-  // ✅ Aplicar filtro por categoría y rango de precio
+  
   const filtered = Object.entries(servicesGroupedByCategory).map(([category, items]) => ({
     category,
     services: items.filter(service => {
@@ -46,11 +46,10 @@ export default function Servicios({ services }: ServiciosProps) {
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex flex-col md:flex-row gap-8">
 
-          {/* FILTROS */}
+
           <div className="md:w-64 w-full bg-white/80 rounded-xl shadow-lg p-6 h-fit backdrop-blur-sm border border-accent/20">
             <h3 className="text-lg font-lora font-semibold mb-4 text-primary">Filtrar por</h3>
 
-            {/* Categorías */}
             <div className="mb-6">
               <h4 className="text-sm font-medium text-primary/80 mb-2">Categoría</h4>
               <div className="space-y-2">
@@ -71,7 +70,6 @@ export default function Servicios({ services }: ServiciosProps) {
               </div>
             </div>
 
-            {/* Rango de precio */}
             <div>
               <h4 className="text-sm font-medium text-primary/80 mb-2">Rango de Precio</h4>
               <div className="space-y-4">
@@ -92,7 +90,6 @@ export default function Servicios({ services }: ServiciosProps) {
             </div>
           </div>
 
-          {/* Resultados */}
           <div className="flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filtered.flatMap(({ category, services }) =>
