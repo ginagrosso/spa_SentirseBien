@@ -139,12 +139,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </motion.button>
       </motion.aside>
 
-<<<<<<< HEAD
-      <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-280' : 'ml-80'}`}>
-=======
-      {/* Main Content */}
       <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-[280px]' : 'ml-[80px]'}`}>
->>>>>>> 82a083df63ba3898702adba51d818a4f8110d9da
         <AdminHeader />
         <div className="p-8">
           <motion.div
