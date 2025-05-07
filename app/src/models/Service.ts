@@ -1,17 +1,17 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import { IService } from '../models/Service';
 
-// Define the interface for Service document
 export interface IService extends Document {
   name: string;
   description: string;
-  duration: number; // in minutes
   price: number;
+  duration?: number; 
   available: boolean;
+  image: string;     
   createdAt: Date;
   updatedAt: Date;
 }
 
-// Create the schema
 const ServiceSchema = new Schema<IService>(
   {
     name: {
@@ -24,15 +24,19 @@ const ServiceSchema = new Schema<IService>(
       required: [true, 'Description is required'],
       trim: true
     },
-    duration: {
-      type: Number,
-      required: [true, 'Duration is required'],
-      min: [1, 'Duration must be at least 1 minute']
-    },
     price: {
       type: Number,
       required: [true, 'Price is required'],
       min: [0, 'Price cannot be negative']
+    },
+    image: {
+      type: String,
+      required: [true, 'Image URL is required']
+    },
+    duration: {
+      type: Number,
+      min: [1, 'Duration must be at least 1 minute'],
+      default: 60
     },
     available: {
       type: Boolean,
@@ -44,6 +48,5 @@ const ServiceSchema = new Schema<IService>(
   }
 );
 
-// Create and export the model
-export const ServiceModel = mongoose.models.Service ||
-  mongoose.model<IService>('Service', ServiceSchema);
+export const ServiceModel =
+  mongoose.models.Service || mongoose.model<IService>('Service', ServiceSchema);
