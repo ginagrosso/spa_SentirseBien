@@ -1,0 +1,22 @@
+# Enable AI features for all files
+!*
+
+# Explicitly include .env files
+!.env
+!.env.*
+!app/.env
+!app/.env.*
+
+# Ignore all files in the node_modules directory
+node_modules/
+
+# Ignore all files in the .next directory
+.next/
+
+# Ignore all files in the .git directory
+.git/
+
+# Ignore .gitignore
+.gitignore
+
+
