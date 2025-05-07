@@ -2,40 +2,32 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../lib/dbConnect';
 import mongoose from 'mongoose';
 import { isAdmin } from '../../middleware/auth';
+import { ServiceModel } from '../../models/Service';
 
-// Handler for HTTP methods
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    // Connect to MongoDB
     await dbConnect();
-    const db = mongoose.connection.db;
-    if (!db) {
-      return res.status(500).json({ error: 'Error de conexión a la base de datos' });
-    }
-
-    // GET all services
+    
     if (req.method === 'GET') {
-      // Check if there's an ID in the query to fetch a specific service
       if (req.query.id) {
-        const servicio = await db.collection('servicios').findOne({
-          _id: new mongoose.Types.ObjectId(req.query.id as string)
-        });
-
+        // Obtener un servicio específico
+        const servicio = await ServiceModel.findById(req.query.id);
+        
         if (!servicio) {
           return res.status(404).json({ error: 'Servicio no encontrado' });
         }
-
+        
         return res.status(200).json(servicio);
       }
-
-      // Otherwise return all services
-      const servicios = await db.collection('servicios').find({}).toArray();
+      
+      // Obtener todos los servicios
+      const servicios = await ServiceModel.find({ available: true });
+      console.log('API servicios:', JSON.stringify(servicios));
       return res.status(200).json(servicios);
     }
 
-    // POST - create new service (admin only)
     if (req.method === 'POST') {
-      // Validate fields
+
       const { nombre, descripcion, precio, duracion, categoria } = req.body;
 
       if (!nombre || !precio || !duracion) {
@@ -59,8 +51,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         ...newService
       });
     }
-
-    // PUT - update service (admin only)
     if (req.method === 'PUT') {
       const { id } = req.query;
 
@@ -126,13 +116,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-// Apply admin middleware only to modification operations
 export default function serviciosEndpoint(req: NextApiRequest, res: NextApiResponse) {
-  // Anyone can GET services, but only admins can modify
   if (req.method === 'GET') {
     return handler(req, res);
   } else {
-    // For POST, PUT, DELETE - check admin rights
     return isAdmin(req, res, () => handler(req, res));
   }
 }

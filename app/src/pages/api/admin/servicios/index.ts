@@ -7,10 +7,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     try {
-      const services = await ServiceModel.find();
+      // Solo devuelve servicios disponibles para el público
+      const services = await ServiceModel.find({ available: true });
       return res.status(200).json(services);
     } catch (error) {
-      return res.status(500).json({ error: 'Error fetching services' });
+      return res.status(500).json({ error: 'Error al cargar servicios' });
     }
   }
 
