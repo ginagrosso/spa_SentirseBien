@@ -10,20 +10,40 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     
     if (req.method === 'GET') {
       if (req.query.id) {
-        // Obtener un servicio específico
         const servicio = await ServiceModel.findById(req.query.id);
-        
         if (!servicio) {
           return res.status(404).json({ error: 'Servicio no encontrado' });
         }
-        
-        return res.status(200).json(servicio);
+        let imageUrl: string | null = null;
+        if (servicio.image && servicio.image.data) {
+          imageUrl = `/api/servicios/imagen/${servicio._id}`;
+        }
+        const obj = servicio.toObject();
+        if (obj.image && obj.image.data) {
+          delete obj.image.data;
+        }
+        console.log('Servicio:', obj.name, 'image:', obj.image, 'imageUrl:', obj.image && obj.image.contentType && obj._id && mongoose.Types.ObjectId.isValid(obj._id)
+          ? `/api/servicios/imagen/${obj._id}`
+          : null);
+        return res.status(200).json({ ...obj, imageUrl });
       }
-      
-      // Obtener todos los servicios
       const servicios = await ServiceModel.find({ available: true });
-      console.log('API servicios:', JSON.stringify(servicios));
-      return res.status(200).json(servicios);
+      const serviciosConImagen = servicios.map(s => {
+        const obj = s.toObject();
+        if (obj.image && obj.image.data) {
+          delete obj.image.data;
+        }
+        console.log('Servicio:', obj.name, 'image:', obj.image, 'imageUrl:', obj.image && obj.image.contentType && obj._id && mongoose.Types.ObjectId.isValid(obj._id)
+          ? `/api/servicios/imagen/${obj._id}`
+          : null);
+        return {
+          ...obj,
+          imageUrl: obj.image && obj.image.contentType && obj._id && mongoose.Types.ObjectId.isValid(obj._id)
+            ? `/api/servicios/imagen/${obj._id}`
+            : null
+        };
+      });
+      return res.status(200).json(serviciosConImagen);
     }
 
     if (req.method === 'POST') {
@@ -88,7 +108,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(200).json(result);
     }
 
-    // DELETE - remove service (admin only)
     if (req.method === 'DELETE') {
       const { id } = req.query;
 
@@ -107,7 +126,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(200).json({ message: 'Servicio eliminado correctamente' });
     }
 
-    // Method not allowed
+
     res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
     return res.status(405).json({ error: `Método ${req.method} no permitido` });
   } catch (error) {
@@ -122,4 +141,17 @@ export default function serviciosEndpoint(req: NextApiRequest, res: NextApiRespo
   } else {
     return isAdmin(req, res, () => handler(req, res));
   }
+}
+
+
+export async function imagenHandler(req: NextApiRequest, res: NextApiResponse) {
+  await dbConnect();
+  const { id } = req.query;
+  const servicio = await ServiceModel.findById(id);
+  if (!servicio || !servicio.image) {
+    return res.status(404).json({ error: 'Imagen no encontrada' });
+  }
+  res.setHeader('Content-Type', servicio.image.contentType);
+  res.setHeader('Cache-Control', 'public, max-age=31536000');
+  return res.send(servicio.image.data);
 }

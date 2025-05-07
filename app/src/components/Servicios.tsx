@@ -93,45 +93,52 @@ export default function Servicios({ services }: ServiciosProps) {
           <div className="flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filtered.flatMap(({ category, services }) =>
-                services.map((service, idx) => (
-                  <motion.div
-                    key={`${category}-${idx}`}
-                    className="relative rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: idx * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <div className="absolute inset-0">
-                      <Image src={service.image} alt={service.name} fill className="object-cover" />
-                    </div>
-
-                    <div className="relative h-full flex flex-col">
-                      <div className="w-full h-40 relative">
-                        <div className="absolute inset-0 bg-black/20"></div>
+                services.map((service, idx) => {
+                  console.log('Servicio:', service.name, 'imageUrl:', service.imageUrl);
+                  return (
+                    <motion.div
+                      key={`${category}-${idx}`}
+                      className="relative rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: idx * 0.1 }}
+                      viewport={{ once: true }}
+                    >
+                      <div className="absolute inset-0">
+                        <img
+                          src={typeof service.image === 'string' ? service.image : (service.imageUrl || '/images/default-service.jpg')}
+                          alt={service.name}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
                       </div>
 
-                      <div className="flex-1 flex flex-col justify-between p-4 bg-white/80">
-                        <div>
-                          <div className="flex justify-between items-start mb-2">
-                            <h4 className="text-lg font-lora font-bold">{service.name}</h4>
-                            <span className="bg-accent/30 text-primary text-base font-semibold px-3 py-1.5 rounded-full border border-accent/30">
-                              ${service.price}
-                            </span>
+                      <div className="relative h-full flex flex-col">
+                        <div className="w-full h-40 relative">
+                          <div className="absolute inset-0 bg-black/20"></div>
+                        </div>
+
+                        <div className="flex-1 flex flex-col justify-between p-4 bg-white/80">
+                          <div>
+                            <div className="flex justify-between items-start mb-2">
+                              <h4 className="text-lg font-lora font-bold">{service.name}</h4>
+                              <span className="bg-accent/30 text-primary text-base font-semibold px-3 py-1.5 rounded-full border border-accent/30">
+                                ${service.price}
+                              </span>
+                            </div>
+                            <p className="text-sm text-primary/80 mb-3 line-clamp-2">{service.description}</p>
                           </div>
-                          <p className="text-sm text-primary/80 mb-3 line-clamp-2">{service.description}</p>
-                        </div>
-                        <div className="flex justify-end">
-                          <Link href="/reserva">
-                            <button className="bg-primary text-white px-5 py-2 rounded-lg hover:bg-primary/90 transition-all text-sm font-medium">
-                              Reservar
-                            </button>
-                          </Link>
+                          <div className="flex justify-end">
+                            <Link href="/reserva">
+                              <button className="bg-primary text-white px-5 py-2 rounded-lg hover:bg-primary/90 transition-all text-sm font-medium">
+                                Reservar
+                              </button>
+                            </Link>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))
+                    </motion.div>
+                  );
+                })
               )}
             </div>
           </div>

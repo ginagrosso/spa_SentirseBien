@@ -6,10 +6,14 @@ export interface IService extends Document {
   price: number;
   duration?: number;
   available: boolean;
-  image: string;
+  image: {
+    data: Buffer;
+    contentType: string;
+  };
   category: string;
   createdAt: Date;
   updatedAt: Date;
+  imageUrl?: string;
 }
 
 
@@ -31,8 +35,14 @@ const ServiceSchema = new Schema<IService>(
       min: [0, 'Price cannot be negative']
     },
     image: {
-      type: String,
-      required: [true, 'Image URL is required']
+      data: {
+        type: Buffer,
+        required: [true, 'Image data is required']
+      },
+      contentType: {
+        type: String,
+        required: [true, 'Image content type is required']
+      }
     },
     category: {
       type: String,
