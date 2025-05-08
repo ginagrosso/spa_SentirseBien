@@ -4,6 +4,8 @@ import { authOptions } from '../auth/[...nextauth]';
 import dbConnect from '@/lib/dbConnect';
 import { Turno } from '@/models/Turno';
 import { validations } from '@/lib/validations';
+import { handleError, ValidationError, AuthenticationError, ConflictError } from '@/lib/errors';
+import { turnoSchema } from '@/lib/validations';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
@@ -14,26 +16,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const session = await getServerSession(req, res, authOptions);
 
         if (!session) {
-            return res.status(401).json({ message: 'No autorizado' });
+            throw new AuthenticationError();
         }
 
         await dbConnect();
 
         const { servicio, fecha, hora, notas } = req.body;
 
-        // Validar fecha usando las validaciones existentes
+        // Validar datos con Zod
+        const validationResult = turnoSchema.safeParse({
+            userId: session.user.id,
+            serviceId: servicio,
+            date: fecha,
+            time: hora,
+            notes: notas
+        });
+
+        if (!validationResult.success) {
+            throw new ValidationError(validationResult.error.message);
+        }
+
+        // Validar fecha
         const fechaResult = validations.validarFecha(fecha);
         if (!fechaResult.isValid) {
-            return res.status(400).json({ message: fechaResult.error });
+            throw new ValidationError(fechaResult.error!);
         }
 
-        // Validar horario usando las validaciones existentes
+        // Validar horario
         const horarioResult = validations.validarHorario(hora);
         if (!horarioResult.isValid) {
-            return res.status(400).json({ message: horarioResult.error });
+            throw new ValidationError(horarioResult.error!);
         }
 
-        // Verificar disponibilidad usando las validaciones existentes
+        // Verificar disponibilidad
         const turnosExistentes = await Turno.find({
             fecha: new Date(fecha),
             estado: { $ne: 'cancelado' }
@@ -47,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         );
 
         if (!disponibilidadResult.isValid) {
-            return res.status(400).json({ message: disponibilidadResult.error });
+            throw new ConflictError(disponibilidadResult.error!);
         }
 
         // Crear el nuevo turno
@@ -62,7 +77,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         return res.status(201).json({ message: 'Turno reservado exitosamente', turno });
     } catch (error) {
-        console.error('Error al reservar turno:', error);
-        return res.status(500).json({ message: 'Error al reservar el turno' });
+        const errorResponse = handleError(error);
+        return res.status(errorResponse.statusCode).json({
+            message: errorResponse.message,
+            code: errorResponse.code
+        });
     }
 } 

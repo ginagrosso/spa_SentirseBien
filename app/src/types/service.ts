@@ -5,6 +5,8 @@ export interface IService {
     duration: number;
     price: number;
     active: boolean;
+    category: string;
+    image: string;
     createdAt: string;
     updatedAt: string;
 } 

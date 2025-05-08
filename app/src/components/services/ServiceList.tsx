@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { IService } from '../models/Service';
+import { IService } from '@/types/service';
 
 interface ServiciosProps {
   services: IService[] | undefined;
@@ -106,7 +106,13 @@ export default function Servicios({ services }: ServiciosProps) {
                     viewport={{ once: true }}
                   >
                     <div className="absolute inset-0">
-                      <Image src={service.image} alt={service.name} fill className="object-cover" />
+                      <Image
+                        src={service.image && service.image.startsWith('/images/') ? service.image : '/images/logo.png'}
+                        alt={service.name}
+                        fill
+                        className="object-cover"
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/images/logo.png'; }}
+                      />
                     </div>
 
                     <div className="relative h-full flex flex-col">

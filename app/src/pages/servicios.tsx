@@ -11,11 +11,14 @@ interface IServiceDisplay {
   _id: any;
   name: string;
   description: string;
-  price: number | string;
-  duration: number | string;
+  price: number;
+  duration: number;
   category: string;
   image: string;
   available: boolean;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function ServiciosPage() {
@@ -41,10 +44,13 @@ export default function ServiciosPage() {
             _id: servicio._id,
             name: servicio.nombre || servicio.name,
             description: servicio.descripcion || servicio.description,
-            price: servicio.precio || servicio.price,
-            duration: servicio.duracion || servicio.duration,
+            price: Number(servicio.precio || servicio.price),
+            duration: Number(servicio.duracion || servicio.duration) || 60,
             category: servicio.categoria || servicio.category || 'General',
-            image: servicio.imagen || servicio.image || '/images/default-service.jpg',
+            image: servicio.imagen || servicio.image || '/images/logo.png',
+            active: servicio.active ?? true,
+            createdAt: servicio.createdAt ?? new Date().toISOString(),
+            updatedAt: servicio.updatedAt ?? new Date().toISOString(),
             available: true
           }));
           
