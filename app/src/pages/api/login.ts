@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../lib/prisma';
+import { UserModel } from '../../models/User';
+import dbConnect from '../../lib/dbConnect';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../../lib/jwt';
 
@@ -15,19 +16,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    await dbConnect();
+    const user = await UserModel.findOne({ email });
+
+    // You can use your model's comparePassword method or bcrypt directly
+    if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ error: 'Credenciales incorrectas' });
     }
 
-    const token = generateToken({ id: user.id, email: user.email });
+    const token = generateToken({ id: user._id, email: user.email });
     return res.status(200).json({
       mensaje: 'Inicio de sesión exitoso',
       token,
       user: {
-        id: user.id,
+        id: user._id,
         email: user.email,
-        // Add any other user fields needed by the frontend
+        nombre: user.nombre,
+        telefono: user.telefono,
+        rol: user.rol  // Include the user's role in the response
       }
     });
   } catch (error) {

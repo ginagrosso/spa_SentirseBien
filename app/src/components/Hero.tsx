@@ -10,7 +10,7 @@ export default function Hero() {
     >
       <div className="absolute inset-0 bg-gradient-to-b from-primary/50 to-primary/40 backdrop-blur-[2px]"></div>
       <motion.div 
-        className="relative z-10 max-w-3xl px-4 mx-auto text-center"
+        className="relative z-10 max-w-4xl px-4 mx-auto text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
