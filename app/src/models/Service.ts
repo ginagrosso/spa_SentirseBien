@@ -6,14 +6,14 @@ export interface IService extends Document {
   price: number;
   duration?: number;
   available: boolean;
-  image: {
+  image?: {
     data: Buffer;
     contentType: string;
   };
+  imageUrl?: string;
   category: string;
   createdAt: Date;
   updatedAt: Date;
-  imageUrl?: string;
 }
 
 

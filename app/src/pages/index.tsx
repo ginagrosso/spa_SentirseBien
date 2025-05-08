@@ -82,11 +82,13 @@ export default function HomePage() {
       <ServicesSlider />
 
       <section className="pt-16 pb-20 px-6 bg-gradient-to-b from-[#F5F9F8] to-white font-roboto text-dark text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-5"></div>
-        <h2 className="text-3xl italic font-bold mb-12 font-lora text-primary relative">
-          <span className="relative z-10">Lo que dicen nuestros clientes</span>
-          <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-accent/30 rounded-full"></div>
-        </h2>
+        <div className="relative">
+          <div className="absolute inset-0 bg-gray-100 opacity-5"></div>
+          <h2 className="text-3xl italic font-bold mb-12 font-lora text-primary relative">
+            <span className="relative z-10">Lo que dicen nuestros clientes</span>
+            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-accent/30 rounded-full"></div>
+          </h2>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto relative z-10">
           <motion.div
             className="bg-white rounded-2xl p-8 shadow-lg border border-soft2 italic hover:shadow-xl transition-all duration-300 hover:-translate-y-1"

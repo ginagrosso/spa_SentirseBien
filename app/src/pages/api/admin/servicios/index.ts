@@ -16,8 +16,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     try {
-      const services = await ServiceModel.find({ available: true });
-      return res.status(200).json(services);
+      const services = await ServiceModel.find({ available: true })
+        .select('-image.data') // Excluir los datos de la imagen
+        .lean(); // Convertir a objeto plano para mejor rendimiento
+
+      // Agregar la URL de la imagen a cada servicio
+      const servicesWithImageUrl = services.map(service => ({
+        ...service,
+        imageUrl: `/api/admin/servicios/${service._id}/image`
+      }));
+
+      return res.status(200).json(servicesWithImageUrl);
     } catch (error) {
       return res.status(500).json({ error: 'Error al cargar servicios' });
     }

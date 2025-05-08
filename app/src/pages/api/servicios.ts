@@ -27,23 +27,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           : null);
         return res.status(200).json({ ...obj, imageUrl });
       }
-      const servicios = await ServiceModel.find({ available: true });
-      const serviciosConImagen = servicios.map(s => {
-        const obj = s.toObject();
-        if (obj.image && obj.image.data) {
-          delete obj.image.data;
-        }
-        console.log('Procesando servicio:', obj.name, 'categoría:', obj.category, 'precio:', obj.price);
-        return {
-          ...obj,
-          category: obj.category ? obj.category.trim() : 'Sin categoría',
-          price: Number(obj.price),
-          imageUrl: obj.image && obj.image.contentType && obj._id && mongoose.Types.ObjectId.isValid(obj._id)
-            ? `/api/servicios/imagen/${obj._id}`
-            : null
-        };
-      });
-      console.log('Servicios procesados para enviar:', serviciosConImagen);
+      const servicios = await ServiceModel.find({ available: true })
+        .select('-image.data')
+        .lean();
+
+      const serviciosConImagen = servicios.map(s => ({
+        ...s,
+        imageUrl: `/api/admin/servicios/${s._id}/image`
+      }));
+
       return res.status(200).json(serviciosConImagen);
     }
 

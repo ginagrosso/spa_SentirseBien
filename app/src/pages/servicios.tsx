@@ -15,7 +15,7 @@ interface IServiceDisplay {
   price: number | string;
   duration: number | string;
   category: string;
-  image: string;
+  imageUrl: string;
   available: boolean;
 }
 

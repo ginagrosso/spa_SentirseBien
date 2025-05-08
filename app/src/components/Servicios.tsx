@@ -127,22 +127,14 @@ export default function Servicios({ services }: ServiciosProps) {
                       viewport={{ once: true }}
                     >
                       <div className="absolute inset-0">
-                        <img
-                          src={typeof service.image === 'string' ? service.image : (service.imageUrl || '/images/default-service.jpg')}
+                        <Image
+                          src={service.imageUrl || '/images/default-service.jpg'}
                           alt={service.name}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          loading="lazy"
-                          onLoad={(e) => {
-                            const img = e.target as HTMLImageElement;
-                            img.style.opacity = '1';
-                          }}
-                          onError={(e) => {
-                            const img = e.target as HTMLImageElement;
-                            img.src = '/images/default-service.jpg';
-                          }}
-                          className="transition-opacity duration-300 opacity-0"
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          priority={idx < 3}
                         />
-                        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
                       </div>
 
                       <div className="relative h-full flex flex-col">
