@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { UserModel } from '../../models/User';
+import { User } from '../../models/User';
 import dbConnect from '../../lib/dbConnect';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Método no permitido.' });
   }
 
-  const { email, password, nombre, telefono } = req.body;
+  const { email, password, name, telefono } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ error: 'Email y contraseña son obligatorios.' });
@@ -18,17 +18,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await dbConnect();
 
     // Check if user exists
-    const existingUser = await UserModel.findOne({ email });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'El usuario ya existe.' });
     }
 
     // Create new user
     // Note: Password hashing is handled by the pre-save middleware we created earlier
-    await UserModel.create({
+    await User.create({
       email,
       password,
-      nombre,
+      name,
       telefono
     });
 
