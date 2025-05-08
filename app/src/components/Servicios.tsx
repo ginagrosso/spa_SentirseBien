@@ -12,7 +12,7 @@ interface ServiciosProps {
 
 export default function Servicios({ services }: ServiciosProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 50000 });
+  const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 100000 });
 
   
   if (!services || !Array.isArray(services)) {
@@ -23,23 +23,32 @@ export default function Servicios({ services }: ServiciosProps) {
     );
   }
 
+  console.log('Todos los servicios recibidos:', services);
+  const categoriasUnicas = Array.from(new Set(services.map(s => s.category))).filter(Boolean);
+  console.log('Categorías únicas encontradas:', categoriasUnicas);
 
   const servicesGroupedByCategory = services.reduce((acc: Record<string, IService[]>, service) => {
-    if (!acc[service.category]) acc[service.category] = [];
-    acc[service.category].push(service);
+    const category = service.category.trim();
+    console.log('Procesando servicio:', service.name, 'con categoría:', category);
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(service);
     return acc;
   }, {});
 
+  console.log('Servicios agrupados por categoría:', servicesGroupedByCategory);
   
   const filtered = Object.entries(servicesGroupedByCategory).map(([category, items]) => ({
     category,
     services: items.filter(service => {
-      const price = service.price;
-      return (!selectedCategory || selectedCategory === category) &&
-             price >= priceRange.min &&
-             price <= priceRange.max;
+      const price = Number(service.price);
+      console.log('Filtrando servicio:', service.name, 'categoría:', category, 'precio:', price, 'rango:', priceRange);
+      const matchesCategory = !selectedCategory || selectedCategory === category;
+      const matchesPrice = !isNaN(price) && price >= priceRange.min && price <= priceRange.max;
+      return matchesCategory && matchesPrice;
     }),
   }));
+
+  console.log('Servicios filtrados:', filtered);
 
   return (
     <main className="relative min-h-screen font-roboto">
@@ -48,12 +57,25 @@ export default function Servicios({ services }: ServiciosProps) {
 
 
           <div className="md:w-64 w-full bg-white/80 rounded-xl shadow-lg p-6 h-fit backdrop-blur-sm border border-accent/20">
-            <h3 className="text-lg font-lora font-semibold mb-4 text-primary">Filtrar por</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-lora font-semibold text-primary">Filtrar por</h3>
+              {(selectedCategory || priceRange.max < 100000) && (
+                <button
+                  onClick={() => {
+                    setSelectedCategory(null);
+                    setPriceRange({ min: 0, max: 100000 });
+                  }}
+                  className="text-sm text-accent hover:text-accent/80 transition-colors"
+                >
+                  Limpiar filtros
+                </button>
+              )}
+            </div>
 
             <div className="mb-6">
               <h4 className="text-sm font-medium text-primary/80 mb-2">Categoría</h4>
               <div className="space-y-2">
-                {Object.keys(servicesGroupedByCategory).map(category => (
+                {categoriasUnicas.map(category => (
                   <label key={category} className="flex items-center space-x-2 cursor-pointer group">
                     <input
                       type="radio"
@@ -80,7 +102,7 @@ export default function Servicios({ services }: ServiciosProps) {
                 <input
                   type="range"
                   min="0"
-                  max="50000"
+                  max="100000"
                   step="1000"
                   value={priceRange.max}
                   onChange={(e) => setPriceRange({ ...priceRange, max: parseInt(e.target.value) })}
@@ -109,7 +131,18 @@ export default function Servicios({ services }: ServiciosProps) {
                           src={typeof service.image === 'string' ? service.image : (service.imageUrl || '/images/default-service.jpg')}
                           alt={service.name}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          loading="lazy"
+                          onLoad={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            img.style.opacity = '1';
+                          }}
+                          onError={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            img.src = '/images/default-service.jpg';
+                          }}
+                          className="transition-opacity duration-300 opacity-0"
                         />
+                        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
                       </div>
 
                       <div className="relative h-full flex flex-col">

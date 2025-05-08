@@ -3,6 +3,7 @@ import dbConnect from '../../../../lib/dbConnect';
 import { ServiceModel } from '../../../../models/Service';
 import formidable from 'formidable';
 import { promises as fs } from 'fs';
+import sharp from 'sharp';
 
 export const config = {
   api: {
@@ -52,17 +53,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'El precio debe ser un número válido.' });
       }
 
+      // Validar que la categoría sea una de las permitidas
+      const categoriasPermitidas = ['Masajes', 'Belleza', 'Tratamientos Faciales', 'Tratamientos Corporales', 'Servicios Grupales'];
+      if (!categoriasPermitidas.includes(category.trim())) {
+        return res.status(400).json({ error: 'La categoría seleccionada no es válida.' });
+      }
+
+      // Optimizar la imagen antes de guardarla
       const imageBuffer = await fs.readFile(imagen.filepath);
-      const contentType = imagen.mimetype || 'image/jpeg';
+      const optimizedImage = await sharp(imageBuffer)
+        .resize(800, 600, { // Redimensionar a un tamaño razonable
+          fit: 'cover',
+          position: 'center'
+        })
+        .jpeg({ quality: 80 }) // Comprimir como JPEG con calidad 80%
+        .toBuffer();
 
       const newService = new ServiceModel({
         name,
         description,
         price: priceNumber,
-        category,
+        category: category.trim(),
         image: {
-          data: imageBuffer,
-          contentType: contentType
+          data: optimizedImage,
+          contentType: 'image/jpeg'
         },
         available: true
       });

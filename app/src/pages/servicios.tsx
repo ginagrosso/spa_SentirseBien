@@ -34,8 +34,14 @@ export default function ServiciosPage() {
         return res.json();
       })
       .then((data) => {
-        console.log('Datos recibidos:', data);
-        setServices(data);
+        console.log('Datos recibidos de la API:', data);
+        // Asegurarse de que cada servicio tenga una categoría válida
+        const serviciosProcesados = data.map((service: any) => ({
+          ...service,
+          category: service.category ? service.category.trim() : 'Sin categoría'
+        }));
+        console.log('Servicios procesados:', serviciosProcesados);
+        setServices(serviciosProcesados);
         setRawData(data);
         setError(null);
       })

@@ -33,16 +33,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         if (obj.image && obj.image.data) {
           delete obj.image.data;
         }
-        console.log('Servicio:', obj.name, 'image:', obj.image, 'imageUrl:', obj.image && obj.image.contentType && obj._id && mongoose.Types.ObjectId.isValid(obj._id)
-          ? `/api/servicios/imagen/${obj._id}`
-          : null);
+        console.log('Procesando servicio:', obj.name, 'categoría:', obj.category, 'precio:', obj.price);
         return {
           ...obj,
+          category: obj.category ? obj.category.trim() : 'Sin categoría',
+          price: Number(obj.price),
           imageUrl: obj.image && obj.image.contentType && obj._id && mongoose.Types.ObjectId.isValid(obj._id)
             ? `/api/servicios/imagen/${obj._id}`
             : null
         };
       });
+      console.log('Servicios procesados para enviar:', serviciosConImagen);
       return res.status(200).json(serviciosConImagen);
     }
 
