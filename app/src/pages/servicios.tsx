@@ -1,12 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageHero from '../components/PageHero';
 import Servicios from '../components/Servicios';
-import { IService } from '../models/Service';
-
 
 interface IServiceDisplay {
   _id: any;
@@ -26,28 +23,55 @@ export default function ServiciosPage() {
   const [rawData, setRawData] = useState(null);
 
   useEffect(() => {
-    console.log('Comenzando fetch de servicios');
     fetch('/api/servicios')
       .then(res => {
-        console.log('Respuesta API:', res.status);
-        if (!res.ok) throw new Error('Error al obtener servicios');
+        if (!res.ok) {
+          return res.json().then(errData => {
+            throw new Error(errData.error || errData.message || `Error ${res.status} al obtener servicios`);
+          }).catch(() => { 
+            throw new Error(`Error ${res.status} al obtener servicios`);
+          });
+        }
         return res.json();
       })
       .then((data) => {
-        console.log('Datos recibidos de la API:', data);
-        // Asegurarse de que cada servicio tenga una categoría válida
-        const serviciosProcesados = data.map((service: any) => ({
-          ...service,
-          category: service.category ? service.category.trim() : 'Sin categoría'
-        }));
-        console.log('Servicios procesados:', serviciosProcesados);
-        setServices(serviciosProcesados);
-        setRawData(data);
-        setError(null);
+        setRawData(data); 
+        
+        if (Array.isArray(data)) {
+          const formattedServices = data.map((service: any) => {
+            let finalImageUrl = service.imageUrl; 
+            if (!finalImageUrl && typeof service.image === 'string') {
+              finalImageUrl = service.image;
+            } else if (!finalImageUrl && typeof service.imagen === 'string') {
+              finalImageUrl = service.imagen;
+            }
+            if (!finalImageUrl) {
+              finalImageUrl = '/images/default-service.jpg';
+            }
+
+            return {
+              _id: service._id,
+              name: service.name || service.nombre || 'Servicio sin nombre',
+              description: service.description || service.descripcion || '',
+              price: service.price || service.precio || 0,
+              duration: service.duration || service.duracion || 0,
+              category: (service.category || service.categoria) ? String(service.category || service.categoria).trim() : 'General', 
+              imageUrl: finalImageUrl, 
+              available: service.available !== undefined ? service.available : true,
+            };
+          });
+          setServices(formattedServices);
+          setError(null);
+        } else {
+          console.error('Respuesta de API inesperada o vacía:', data);
+          setError('No se encontraron servicios disponibles o el formato es incorrecto.');
+          setServices([]);
+        }
       })
-      .catch((e) => {
+      .catch((e: Error) => {
         console.error('Error cargando servicios:', e);
-        setError('No se pudieron cargar los servicios. Intenta más tarde.');
+        setError(e.message || 'No se pudieron cargar los servicios. Intenta más tarde.');
+        setServices([]); 
       })
       .finally(() => {
         setLoading(false);
@@ -56,7 +80,6 @@ export default function ServiciosPage() {
 
   return (
     <>
-      <Header transparent={true} />
       <PageHero
         title="Nuestros Servicios"
         description="Descubrí todos los tratamientos que Sentirse Bien tiene para vos."
@@ -66,17 +89,19 @@ export default function ServiciosPage() {
       )}
       {error && (
         <p className="text-center mt-8 text-red-500">{error}</p>
-            )}
-            {!loading && !error && services.length > 0 && (
-        <Servicios services={services as unknown as IService[]} />
-            )}
-            {!loading && !error && services.length === 0 && (
+      )}
+      {!loading && !error && services.length > 0 && (
+        <Servicios services={services as any} /> 
+      )}
+      {!loading && !error && services.length === 0 && (
         <div className="text-center mt-10 p-4">
           <p className="text-amber-600">No hay servicios disponibles actualmente.</p>
-          <details className="mt-4 text-left max-w-2xl mx-auto p-4 bg-gray-50 rounded">
-            <summary className="cursor-pointer text-sm text-gray-500">Información de depuración</summary>
-            <pre className="text-xs mt-2 overflow-auto p-2 bg-gray-100">{JSON.stringify(rawData, null, 2)}</pre>
-          </details>
+          {rawData && (
+            <details className="mt-4 text-left max-w-2xl mx-auto p-4 bg-gray-50 rounded">
+              <summary className="cursor-pointer text-sm text-gray-500">Información de depuración (datos crudos API)</summary>
+              <pre className="text-xs mt-2 overflow-auto p-2 bg-gray-100">{JSON.stringify(rawData, null, 2)}</pre>
+            </details>
+          )}
         </div>
       )}
       <Footer />
