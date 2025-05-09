@@ -48,7 +48,7 @@ export default function Header({ transparent = true }: HeaderProps) {
   ];
 
   if (isAdmin) {
-    navLinks.push({ href: '/admin', label: 'ADMIN' });
+    navLinks.push({ href: '/admin/dashboard', label: 'ADMIN' });
   }
 
   return (

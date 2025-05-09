@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema<IUser>({
         required: [true, 'La contraseña es requerida'],
         minlength: [6, 'La contraseña debe tener al menos 6 caracteres']
     },
-    role: {
+    rol: {
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
@@ -48,6 +48,6 @@ userSchema.pre('save', async function(next) {
 
 // Índices para mejorar el rendimiento de las consultas
 // userSchema.index({ email: 1 });
-userSchema.index({ role: 1 });
+userSchema.index({ rol: 1 });
 
 export const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);

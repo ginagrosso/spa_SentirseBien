@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { hash } from 'bcryptjs';
 import { User } from '@/models/User';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -21,14 +20,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(400).json({ message: 'Ya existe una cuenta con este email' });
         }
 
-        // Encriptar contraseña
-        const hashedPassword = await hash(password, 12);
-
-        // Crear usuario
+        // Crear usuario (el modelo se encargará de hashear la contraseña)
         const user = await User.create({
             name,
             email,
-            password: hashedPassword,
+            password,
             role: 'user'
         });
 

@@ -8,6 +8,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     await dbConnect();
     
+    console.log('API /api/servicios called, method:', req.method);
+    
     if (req.method === 'GET') {
       if (req.query.id) {
         const servicio = await ServiceModel.findById(req.query.id);
@@ -122,8 +124,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
     return res.status(405).json({ error: `Método ${req.method} no permitido` });
-  } catch (error) {
-    console.error('Error en API de servicios:', error);
+  } catch (error: any) {
+    console.error("Full error in /api/servicios GET:", error);
     return res.status(500).json({ error: 'Error del servidor' });
   }
 }

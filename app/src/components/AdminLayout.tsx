@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -25,10 +25,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter();
   const { user, logout, isLoading } = useAuth();
 
-  if (!isLoading && (!user || user.rol !== 'admin')) {
-    router.push('/login');
-    return null;
-  }
+  useEffect(() => {
+    if (!isLoading && (!user || user.rol !== 'admin')) {
+      router.replace('/auth/signin');
+    }
+  }, [user, isLoading, router]);
 
   if (isLoading) {
     return (
@@ -38,8 +39,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     );
   }
 
+  if (!user || user.rol !== 'admin') {
+    return null;
+  }
+
   const menuItems = [
-    { icon: FiHome, label: 'Dashboard', path: '/admin' },
+    { icon: FiHome, label: 'Dashboard', path: '/admin/dashboard' },
     { icon: FiSettings, label: 'Servicios', path: '/admin/servicios' },
     { icon: FiCalendar, label: 'Turnos', path: '/admin/turnos' },
     { icon: FiUsers, label: 'Empleados', path: '/admin/empleados' },
@@ -48,7 +53,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   const handleLogout = () => {
     logout();
-    router.push('/login');
+    router.push('/auth/signin');
   };
 
   return (

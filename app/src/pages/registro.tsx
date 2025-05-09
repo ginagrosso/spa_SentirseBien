@@ -66,14 +66,13 @@ export default function Registro() {
 
     setIsLoading(true);
     try {
-      const res = await fetch('/api/registro', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nombre: form.nombre,
+          name: form.nombre,
           email: form.email,
-          telefono: form.telefono,
-          password: form.password,
+          password: form.password
         }),
       });
       const data = await res.json();

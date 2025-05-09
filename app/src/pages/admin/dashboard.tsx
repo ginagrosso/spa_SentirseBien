@@ -1,6 +1,6 @@
 // pages/admin/dashboard.tsx
 import AdminLayout from '../../components/AdminLayout';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import { motion } from 'framer-motion';
 import { Calendar, Users, DollarSign, Settings } from 'lucide-react';
 

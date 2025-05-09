@@ -45,7 +45,7 @@ export default function Servicios({ services }: ServiciosProps) {
   console.log('Servicios filtrados:', filtered);
 
   return (
-    <main className="relative min-h-screen font-roboto">
+    <div className="relative min-h-screen font-roboto">
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex flex-col md:flex-row gap-8">
 
@@ -163,7 +163,7 @@ export default function Servicios({ services }: ServiciosProps) {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 

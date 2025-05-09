@@ -1,30 +1,32 @@
-import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-export default withAuth(
-    function middleware(req) {
-        // Verificar si el usuario tiene el rol necesario para acceder a la ruta
-        const token = req.nextauth.token;
-        const path = req.nextUrl.pathname;
+export async function middleware(req: NextRequest) {
+    const token = await getToken({ req });
+    const isAuth = !!token;
+    const isAuthPage = req.nextUrl.pathname.startsWith('/auth');
 
-        // Rutas que requieren rol de admin
-        if (path.startsWith('/admin') && token?.role !== 'admin') {
-            return NextResponse.redirect(new URL('/', req.url));
-        }
+    // Si está en página de auth y está autenticado, redirigir al dashboard
+    if (isAuthPage && isAuth) {
+        return NextResponse.redirect(new URL('/admin/dashboard', req.url));
+    }
 
-        return NextResponse.next();
-    },
-    {
-        callbacks: {
-            authorized: ({ token }) => !!token
+    // Si no está autenticado y no está en página de auth, redirigir al login
+    if (!isAuth && !isAuthPage) {
+        return NextResponse.redirect(new URL('/auth/signin', req.url));
+    }
+
+    // Si está autenticado y accede a ruta admin, verificar rol
+    if (isAuth && req.nextUrl.pathname.startsWith('/admin')) {
+        if (token.rol !== 'admin') {
+            return NextResponse.redirect(new URL('/auth/signin', req.url));
         }
     }
-);
+
+    return NextResponse.next();
+}
 
 export const config = {
-    matcher: [
-        '/turnos/:path*',
-        '/admin/:path*',
-        '/perfil/:path*'
-    ]
+    matcher: ['/admin/:path*', '/auth/:path*']
 }; 

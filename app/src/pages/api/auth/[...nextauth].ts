@@ -1,16 +1,29 @@
-import NextAuth from 'next-auth';
+import NextAuth, { DefaultSession, AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
 import { User } from '@/models/User';
 import dbConnect from '@/lib/dbConnect';
+import { getSession } from 'next-auth/react';
+import { JWT } from 'next-auth/jwt';
 
 declare module 'next-auth/jwt' {
     interface JWT {
-        role: 'user' | 'admin';
+        rol: 'user' | 'admin';
     }
 }
 
-export default NextAuth({
+declare module 'next-auth' {
+    interface User {
+        rol: 'user' | 'admin';
+    }
+    interface Session {
+        user: {
+            rol: 'user' | 'admin';
+        } & DefaultSession['user']
+    }
+}
+
+export const authOptions: AuthOptions = {
     providers: [
         CredentialsProvider({
             name: 'Credentials',
@@ -24,7 +37,6 @@ export default NextAuth({
                 }
 
                 try {
-                    // Ensure MongoDB connection is established
                     await dbConnect();
                     
                     console.log('Searching for user with email:', credentials.email);
@@ -45,7 +57,7 @@ export default NextAuth({
                         id: user._id.toString(),
                         email: user.email,
                         name: user.name,
-                        role: user.role
+                        rol: user.rol
                     };
                 } catch (error) {
                     console.error('Authentication error:', error);
@@ -55,24 +67,33 @@ export default NextAuth({
         })
     ],
     session: {
-        strategy: 'jwt'
+        strategy: 'jwt' as const
     },
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user }: { token: JWT; user: any }) {
             if (user) {
-                (token as any).role = (user as any).role;
+                token.rol = user.rol;
             }
             return token;
         },
-        async session({ session, token }) {
+        async session({ session, token }: { session: any; token: JWT }) {
             if (session?.user) {
-                (session.user as any).role = token.role;
+                session.user.rol = token.rol;
             }
             return session;
+        },
+        async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
+            // Permitir redirecciones externas
+            if (url.startsWith('http')) return url;
+            // Permitir redirecciones internas
+            if (url.startsWith('/')) return url;
+            // Redirecciones por defecto
+            return baseUrl;
         }
     },
     pages: {
-        signIn: '/auth/signin',
-        error: '/auth/error'
+        signIn: '/auth/signin'
     }
-}); 
+};
+
+export default NextAuth(authOptions); 

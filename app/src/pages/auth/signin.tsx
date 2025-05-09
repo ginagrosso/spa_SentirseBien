@@ -25,7 +25,16 @@ export default function SignIn() {
             if (result?.error) {
                 setError(result.error);
             } else {
-                router.push('/');
+                // Obtener la sesión actual
+                const response = await fetch('/api/auth/session');
+                const session = await response.json();
+                
+                // Redirigir basado en el rol
+                if (session?.user?.role === 'admin') {
+                    router.push('/admin/dashboard');
+                } else {
+                    router.push('/');
+                }
             }
         } catch (error) {
             setError('Ocurrió un error al iniciar sesión');

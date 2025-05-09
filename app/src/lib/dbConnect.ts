@@ -33,29 +33,21 @@ async function dbConnect(): Promise<mongoose.Connection> {
     throw new Error('Please define the MONGODB_URI environment variable');
   }
 
+  console.log('Attempting to use MONGODB_URI:', process.env.MONGODB_URI);
+
   if (globalWithMongoose.mongoose.conn) {
+    console.log('Using cached database connection');
     return globalWithMongoose.mongoose.conn;
   }
 
   if (!globalWithMongoose.mongoose.promise) {
     const opts = {
-      bufferCommands: true,
-      serverSelectionTimeoutMS: 30000,
-      socketTimeoutMS: 45000,
-      connectTimeoutMS: 30000,
-      maxPoolSize: 10,
-      minPoolSize: 5,
-      maxIdleTimeMS: 60000,
-      retryWrites: true,
-      retryReads: true,
-      family: 4,
-      // heartbeatFrequencyMS: 10000,
-      // autoIndex: true,
-      // autoCreate: true
+      bufferCommands: false,
     };
-
+    console.log('Creating new database connection promise');
     globalWithMongoose.mongoose.promise = mongoose.connect(MONGODB_URI, opts)
       .then(mongooseInstance => {
+        console.log('MongoDB connected successfully to:', mongooseInstance.connection.host);
         return mongooseInstance.connection;
       })
       .catch(error => {
@@ -65,11 +57,12 @@ async function dbConnect(): Promise<mongoose.Connection> {
   }
 
   try {
+    console.log('Awaiting database connection promise');
     globalWithMongoose.mongoose.conn = await globalWithMongoose.mongoose.promise;
     return globalWithMongoose.mongoose.conn;
   } catch (e) {
+    console.error('Database connection error in dbConnect:', e);
     globalWithMongoose.mongoose.promise = null;
-    console.error('Failed to establish MongoDB connection:', e);
     throw e;
   }
 }

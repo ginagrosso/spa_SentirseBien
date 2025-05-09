@@ -2,8 +2,9 @@ export interface IUser {
     _id: string;
     name: string;
     email: string;
+    password: string;
     image?: string;
-    role: 'user' | 'admin';
+    rol: 'user' | 'admin';
     active: boolean;
     createdAt: string;
     updatedAt: string;

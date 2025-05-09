@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Footer from '../components/Footer';
 import PageHero from '../components/PageHero';
 import Servicios from '../components/Servicios';
 
@@ -104,7 +103,6 @@ export default function ServiciosPage() {
           )}
         </div>
       )}
-      <Footer />
     </>
   );
 }
