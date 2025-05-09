@@ -16,10 +16,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(401).json({ message: 'No autorizado' });
         }
 
-        const { professionalId, date } = req.query;
+        const { date } = req.query;
 
-        if (!professionalId || !date) {
-            return res.status(400).json({ message: 'Faltan parámetros requeridos' });
+        if (!date) {
+            return res.status(400).json({ message: 'Falta la fecha' });
         }
 
         // Validar la fecha
@@ -30,10 +30,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         await dbConnect();
 
-        // Obtener turnos existentes para el profesional en la fecha especificada
+        // Obtener turnos existentes para la fecha especificada
         const turnosExistentes = await Turno.find({
-            professional: professionalId,
-            date: date,
+            fecha: date,
             status: { $ne: 'cancelado' }
         });
 
@@ -48,8 +47,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             
             // Verificar si el intervalo está disponible
             const haySolapamiento = turnosExistentes.some(turno => {
-                const turnoInicio = new Date(`${date}T${turno.startTime}`);
-                const turnoFin = new Date(`${date}T${turno.endTime}`);
+                const turnoInicio = new Date(`${date}T${turno.hora}`);
+                const turnoFin = new Date(turnoInicio.getTime() + turno.duration * 60000);
                 return (
                     (hora >= turnoInicio && hora < turnoFin) ||
                     (horaFinIntervalo > turnoInicio && horaFinIntervalo <= turnoFin) ||

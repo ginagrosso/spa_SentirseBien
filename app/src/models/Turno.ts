@@ -1,24 +1,19 @@
 // src/models/Turno.ts
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Model } from 'mongoose';
+import { ITurno } from '@/types/turno';
 
-export interface ITurno extends Document {
-    userId: mongoose.Types.ObjectId;
-    service: mongoose.Types.ObjectId;
-    date: Date;
-    status: 'pendiente' | 'confirmado' | 'cancelado';
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-const TurnoSchema = new Schema<ITurno>({
-    userId:  { type: Schema.Types.ObjectId, ref: 'User',    required: true },
-    service: { type: Schema.Types.ObjectId, ref: 'Service', required: true },
-    date:    { type: Date,     required: true },
-    status:  {
+const TurnoSchema = new Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true },
+    fecha: { type: String, required: true },
+    hora: { type: String, required: true },
+    duration: { type: Number, required: true, default: 60 },
+    status: {
         type: String,
-        enum: ['pendiente','confirmado','cancelado'],
+        enum: ['pendiente', 'confirmado', 'cancelado', 'completado'],
         default: 'pendiente'
     },
+    notas: { type: String }
 }, {
     timestamps: true
 });

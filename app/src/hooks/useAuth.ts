@@ -14,7 +14,7 @@ export function useAuth() {
         router.push('/auth/signin');
     };
 
-    const isAdmin = user?.role === 'admin';
+    const isAdmin = user?.rol === 'admin';
 
     return {
         user,

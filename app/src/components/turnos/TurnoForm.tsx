@@ -1,16 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { format } from 'date-fns';
-import { useAuth } from '../../context/AuthContext';
-import { IProfessional } from '@/types/professional';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import toast from 'react-hot-toast';
-import { ClockIcon, CalendarIcon, SparklesIcon } from '@heroicons/react/24/outline';
-import { apiRequest } from '../../lib/apiClient';
-import { createTurno, TurnoPayload } from '../../lib/turnos.api';
 
 interface Service {
   _id: string;
@@ -21,13 +13,11 @@ interface Service {
 
 interface TurnoFormProps {
   services: Service[];
-  professionals: IProfessional[];
 }
 
-export default function TurnoForm({ services, professionals }: TurnoFormProps) {
+export default function TurnoForm({ services }: TurnoFormProps) {
   const [formData, setFormData] = useState({
     servicio: '',
-    profesional: '',
     fecha: '',
     hora: '',
     notas: ''
@@ -43,19 +33,16 @@ export default function TurnoForm({ services, professionals }: TurnoFormProps) {
       [name]: value
     }));
 
-    // Si cambia la fecha o el profesional, actualizar horarios disponibles
-    if (name === 'fecha' || name === 'profesional') {
-      actualizarHorariosDisponibles(
-        name === 'fecha' ? value : formData.fecha,
-        name === 'profesional' ? value : formData.profesional
-      );
+    // Si cambia la fecha, actualizar horarios disponibles
+    if (name === 'fecha') {
+      actualizarHorariosDisponibles(value);
     }
   };
 
-  const actualizarHorariosDisponibles = async (fecha: string, profesional: string) => {
-    if (!fecha || !profesional) return;
+  const actualizarHorariosDisponibles = async (fecha: string) => {
+    if (!fecha) return;
     try {
-      const response = await fetch(`/api/turnos/disponibles?date=${fecha}&professionalId=${profesional}`);
+      const response = await fetch(`/api/turnos/disponibles?date=${fecha}`);
       const data = await response.json();
 
       if (!response.ok) {
@@ -79,7 +66,10 @@ export default function TurnoForm({ services, professionals }: TurnoFormProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          service: formData.servicio
+        }),
       });
 
       const data = await response.json();
@@ -121,27 +111,6 @@ export default function TurnoForm({ services, professionals }: TurnoFormProps) {
       </div>
 
       <div>
-        <label htmlFor="profesional" className="block text-sm font-medium text-gray-700 mb-1">
-          Profesional
-        </label>
-        <select
-          id="profesional"
-          name="profesional"
-          value={formData.profesional}
-          onChange={handleChange}
-          className="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
-          required
-        >
-          <option value="">Selecciona un profesional</option>
-          {professionals.map((professional) => (
-            <option key={professional._id} value={professional._id}>
-              {professional.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
         <label htmlFor="fecha" className="block text-sm font-medium text-gray-700 mb-1">
           Fecha
         </label>
@@ -168,10 +137,10 @@ export default function TurnoForm({ services, professionals }: TurnoFormProps) {
           onChange={handleChange}
           className="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
           required
-          disabled={!formData.fecha || !formData.profesional}
+          disabled={!formData.fecha}
         >
           <option value="">Selecciona una hora</option>
-          {formData.fecha && formData.profesional ? (
+          {formData.fecha ? (
             horariosDisponibles.length > 0 ? (
               horariosDisponibles.map((hora) => (
                 <option key={hora} value={hora}>
@@ -182,7 +151,7 @@ export default function TurnoForm({ services, professionals }: TurnoFormProps) {
               <option value="" disabled>No hay horarios disponibles</option>
             )
           ) : (
-            <option value="" disabled>Selecciona fecha y profesional</option>
+            <option value="" disabled>Selecciona una fecha</option>
           )}
         </select>
       </div>
@@ -202,7 +171,7 @@ export default function TurnoForm({ services, professionals }: TurnoFormProps) {
         />
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex justify-end gap-4">
         <button
           type="button"
           onClick={() => router.back()}

@@ -5,15 +5,16 @@ import Link from 'next/link';
 import { User, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '../context/AuthContext';
 
 interface HeaderProps {
   transparent?: boolean;
 }
 
 export default function Header({ transparent = true }: HeaderProps) {
-  const { logout, isAuthenticated, isAdmin } = useAuth();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { logout, user } = useAuth();
+  const isAuthenticated = !!user;
+  const isAdmin = user?.rol === 'admin';
   const [showMenu, setShowMenu] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -49,7 +50,7 @@ export default function Header({ transparent = true }: HeaderProps) {
   ];
 
   if (isAdmin) {
-    navLinks.push({ href: '/admin', label: 'ADMIN' });
+    navLinks.push({ href: '/admin/dashboard', label: 'ADMIN' });
   }
 
   return (
