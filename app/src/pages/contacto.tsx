@@ -88,7 +88,7 @@ export default function Contacto() {
                     required
                   ></textarea>
                 </div>
-                <div className="pt-2">
+                <div className="pt-4">
                   <button
                     type="submit"
                     className="w-full bg-primary text-white py-3 px-6 rounded-lg hover:bg-primary/90 transition-all font-medium"

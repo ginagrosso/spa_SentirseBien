@@ -65,6 +65,7 @@ next-env.d.ts
 tmp/
 
 # Debug files
+<<<<<<< HEAD
 .pnpm-debug.log*
 
 # MongoDB Shell
@@ -73,3 +74,6 @@ mongosh-2.2.5-linux-x64.tgz
 
 # Next.js cache
 app/.next/cache/
+=======
+.pnpm-debug.log*
+>>>>>>> origin/feature/adminpage

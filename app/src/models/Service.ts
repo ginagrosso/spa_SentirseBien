@@ -1,13 +1,17 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { IService } from '../models/Service';
 
 export interface IService extends Document {
   name: string;
   description: string;
   price: number;
-  duration?: number; 
+  duration?: number;
   available: boolean;
-  image: string;     
+  image?: {
+    data: Buffer;
+    contentType: string;
+  };
+  imageUrl?: string;
+  category: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,9 +34,20 @@ const ServiceSchema = new Schema<IService>(
       min: [0, 'Price cannot be negative']
     },
     image: {
-      type: String,
-      required: [true, 'Image URL is required']
+      data: {
+        type: Buffer,
+        required: [true, 'Image data is required']
+      },
+      contentType: {
+        type: String,
+        required: [true, 'Image content type is required']
+      }
     },
+    category: {
+      type: String,
+      required: [true, 'Category is required'],
+      trim: true,
+    },    
     duration: {
       type: Number,
       min: [1, 'Duration must be at least 1 minute'],

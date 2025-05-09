@@ -1,27 +1,43 @@
+<<<<<<< HEAD
 // src/lib/dbConnect.ts
 import mongoose from 'mongoose';
 
 // Define the MongoDB connection cache type
+=======
+
+import mongoose from 'mongoose';
+
+>>>>>>> origin/feature/adminpage
 interface ConnectionCache {
   conn: mongoose.Connection | null;
   promise: Promise<mongoose.Connection> | null;
 }
 
+<<<<<<< HEAD
 // Declare global namespace augmentation
+=======
+>>>>>>> origin/feature/adminpage
 declare global {
   var mongoose: ConnectionCache;
 }
 
+<<<<<<< HEAD
 // Initialize cache in global scope to persist across hot reloads in development
+=======
+>>>>>>> origin/feature/adminpage
 const globalWithMongoose = global as typeof global & {
   mongoose: ConnectionCache;
 };
 
+<<<<<<< HEAD
 // Set up the connection cache
+=======
+>>>>>>> origin/feature/adminpage
 if (!globalWithMongoose.mongoose) {
   globalWithMongoose.mongoose = { conn: null, promise: null };
 }
 
+<<<<<<< HEAD
 /**
  * Connect to MongoDB database
  */
@@ -35,10 +51,17 @@ async function dbConnect(): Promise<mongoose.Connection> {
     console.log('MongoDB URI (masked):', maskedUri);
   }
 
+=======
+
+async function dbConnect(): Promise<mongoose.Connection> {
+  const MONGODB_URI = process.env.MONGODB_URI;
+
+>>>>>>> origin/feature/adminpage
   if (!MONGODB_URI) {
     throw new Error('Please define the MONGODB_URI environment variable');
   }
 
+<<<<<<< HEAD
   // If we have an existing connection, return it
   if (globalWithMongoose.mongoose.conn) {
     console.log('Using existing MongoDB connection');
@@ -101,6 +124,27 @@ async function dbConnect(): Promise<mongoose.Connection> {
         stack: e.stack
       });
     }
+=======
+  if (globalWithMongoose.mongoose.conn) {
+    return globalWithMongoose.mongoose.conn;
+  }
+
+  if (!globalWithMongoose.mongoose.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
+
+    globalWithMongoose.mongoose.promise = mongoose.connect(MONGODB_URI, opts)
+      .then(mongoose => mongoose.connection);
+  }
+
+  try {
+  
+    globalWithMongoose.mongoose.conn = await globalWithMongoose.mongoose.promise;
+  } catch (e) {
+    
+    globalWithMongoose.mongoose.promise = null;
+>>>>>>> origin/feature/adminpage
     throw e;
   }
 

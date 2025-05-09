@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "@types/node": "^22.15.17"
+  },
+  "dependencies": {
+    "@types/formidable": "^3.4.5",
+    "formidable": "^3.5.4",
+    "sharp": "^0.34.1"
+  }
+}

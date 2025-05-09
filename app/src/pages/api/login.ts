@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 import { NextApiRequest, NextApiResponse } from 'next';
 import { signIn } from 'next-auth/react';
+=======
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { UserModel } from '../../models/User';
+import dbConnect from '../../lib/dbConnect';
+import bcrypt from 'bcryptjs';
+import { generateToken } from '../../lib/jwt';
+>>>>>>> origin/feature/adminpage
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -13,6 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+<<<<<<< HEAD
     const result = await signIn('credentials', {
       redirect: false,
       email,
@@ -24,6 +33,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     res.status(200).json({ message: 'Login exitoso' });
+=======
+    await dbConnect();
+    const user = await UserModel.findOne({ email });
+
+    // You can use your model's comparePassword method or bcrypt directly
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ error: 'Credenciales incorrectas' });
+    }
+
+    const token = generateToken({ id: user._id, email: user.email });
+    return res.status(200).json({
+      mensaje: 'Inicio de sesión exitoso',
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        nombre: user.nombre,
+        telefono: user.telefono,
+        rol: user.rol  // Include the user's role in the response
+      }
+    });
+>>>>>>> origin/feature/adminpage
   } catch (error) {
     console.error('Error en login:', error);
     res.status(500).json({ message: 'Error en el servidor' });

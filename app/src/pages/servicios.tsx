@@ -1,12 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+<<<<<<< HEAD
+=======
+import Header from '../components/Header';
+>>>>>>> origin/feature/adminpage
 import Footer from '../components/Footer';
 import PageHero from '../components/PageHero';
 import Servicios from '../components/Servicios';
 import { IService } from '../models/Service';
 
+<<<<<<< HEAD
 // Create a simpler interface for frontend display
+=======
+
+>>>>>>> origin/feature/adminpage
 interface IServiceDisplay {
   _id: any;
   name: string;
@@ -14,7 +22,11 @@ interface IServiceDisplay {
   price: number | string;
   duration: number | string;
   category: string;
+<<<<<<< HEAD
   image: string;
+=======
+  imageUrl: string;
+>>>>>>> origin/feature/adminpage
   available: boolean;
 }
 
@@ -33,6 +45,7 @@ export default function ServiciosPage() {
         return res.json();
       })
       .then((data) => {
+<<<<<<< HEAD
         console.log('Datos recibidos:', data);
         setRawData(data);
         
@@ -54,6 +67,18 @@ export default function ServiciosPage() {
           console.error('No hay datos de servicios o formato incorrecto');
           setError('No se encontraron servicios disponibles.');
         }
+=======
+        console.log('Datos recibidos de la API:', data);
+        // Asegurarse de que cada servicio tenga una categoría válida
+        const serviciosProcesados = data.map((service: any) => ({
+          ...service,
+          category: service.category ? service.category.trim() : 'Sin categoría'
+        }));
+        console.log('Servicios procesados:', serviciosProcesados);
+        setServices(serviciosProcesados);
+        setRawData(data);
+        setError(null);
+>>>>>>> origin/feature/adminpage
       })
       .catch((e) => {
         console.error('Error cargando servicios:', e);
@@ -66,6 +91,10 @@ export default function ServiciosPage() {
 
   return (
     <>
+<<<<<<< HEAD
+=======
+      <Header transparent={true} />
+>>>>>>> origin/feature/adminpage
       <PageHero
         title="Nuestros Servicios"
         description="Descubrí todos los tratamientos que Sentirse Bien tiene para vos."
@@ -75,11 +104,19 @@ export default function ServiciosPage() {
       )}
       {error && (
         <p className="text-center mt-8 text-red-500">{error}</p>
+<<<<<<< HEAD
       )}
       {!loading && !error && services.length > 0 && (
         <Servicios services={services} />
       )}
       {!loading && !error && services.length === 0 && (
+=======
+            )}
+            {!loading && !error && services.length > 0 && (
+        <Servicios services={services as unknown as IService[]} />
+            )}
+            {!loading && !error && services.length === 0 && (
+>>>>>>> origin/feature/adminpage
         <div className="text-center mt-10 p-4">
           <p className="text-amber-600">No hay servicios disponibles actualmente.</p>
           <details className="mt-4 text-left max-w-2xl mx-auto p-4 bg-gray-50 rounded">

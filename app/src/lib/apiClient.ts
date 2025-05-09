@@ -1,4 +1,5 @@
 //src/lib/apiClient.ts
+<<<<<<< HEAD
 export async function apiRequest<T>(
     endpoint: string,
     options: RequestInit = {}
@@ -28,4 +29,22 @@ export async function apiRequest<T>(
     }
 
     return response.json();
+=======
+export async function apiRequest(url: string, options: RequestInit = {}) {
+  const token = localStorage.getItem('token');
+
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  return fetch(url, {
+    ...options,
+    headers,
+  });
+>>>>>>> origin/feature/adminpage
 }
