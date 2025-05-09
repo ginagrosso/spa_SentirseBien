@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Link from 'next/link';
+import PageHero from '@/components/PageHero';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -10,22 +13,15 @@ export default function LoginPage() {
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [tipoMensaje, setTipoMensaje] = useState<'exito' | 'error' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
-
-  // Debug user data on component mount and when it changes
-  useEffect(() => {
-    console.log("Current user in LoginPage:", user);
-  }, [user]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
     setMensaje(null);
-    console.log("Login form submitted for email:", email);
 
     try {
-      console.log("Sending login request to API");
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -33,41 +29,22 @@ export default function LoginPage() {
       });
       const data = await res.json();
 
-      console.log("API response status:", res.status);
-      console.log("API response data:", data);
-      console.log("User from API:", data.user);
-      console.log("User role from API:", data.user?.rol);
-
       if (res.ok) {
-        // Store user data
-        console.log("Login successful, calling context.login()");
         await login(data.token, data.user);
-        console.log("Context updated with user data");
-
-        // Check user role for redirection
         const userRole = data.user?.rol;
-        console.log(`Redirecting based on role: "${userRole}"`);
 
-        console.log("Checking role:", userRole, "Type:", typeof userRole);
-        console.log("Is admin?", String(userRole).toLowerCase() === 'admin');
-
-        // Force comparison as string and add delay to ensure state updates
         setTimeout(() => {
           if (String(userRole).toLowerCase() === 'admin') {
-            console.log("ADMIN USER CONFIRMED - redirecting to dashboard");
             router.push('/admin/dashboard');
           } else {
-            console.log("Regular user confirmed - redirecting to reserva");
             router.push('/reserva');
           }
         }, 300);
       } else {
-        console.log("Login failed:", data.error);
         setMensaje(data.error || 'Error en login');
         setTipoMensaje('error');
       }
     } catch (error) {
-      console.error('Login error:', error);
       setMensaje('Error de conexión. Intente nuevamente.');
       setTipoMensaje('error');
     } finally {
@@ -77,41 +54,50 @@ export default function LoginPage() {
 
   return (
     <>
-      <Header />
-
-      <section className="bg-[#F5F9F8] text-[#436E6C] font-roboto py-16 px-4 text-center">
-        <h1 className="text-4xl font-amiri italic mb-4">Iniciar Sesión</h1>
-        <p className="max-w-3xl mx-auto text-lg">
-          Ingresa a tu cuenta para reservar tus turnos y acceder a todos los beneficios de{' '}
-          <span className="font-semibold">Sentirse Bien</span>.
-        </p>
-      </section>
+      <PageHero 
+        title="Iniciar Sesión"
+        description="Ingresa a tu cuenta para reservar tus turnos y acceder a todos los beneficios de Sentirse Bien."
+      />
 
       <main className="py-16 px-4 bg-white font-roboto flex justify-center">
         <div className="bg-[#F5F9F8] p-8 rounded-xl shadow-md w-full max-w-lg text-[#436E6C]">
           <form className="space-y-5" onSubmit={handleSubmit}>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="Correo electrónico"
-              className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
-              required
-            />
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Contraseña"
-              className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
-              required
-            />
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-[#436E6C] mb-1">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="tu@email.com"
+                className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-[#436E6C] mb-1">
+                Contraseña
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full p-3 rounded-md border border-[#B6D5C8] focus:outline-none focus:ring-2 focus:ring-[#436E6C]"
+                required
+              />
+            </div>
+
             <button
               type="submit"
               disabled={isLoading}
               className="w-full bg-[#436E6C] text-white py-3 rounded-md hover:bg-[#5A9A98] transition disabled:bg-opacity-70 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Procesando...' : 'Entrar'}
+              {isLoading ? 'Procesando...' : 'Iniciar Sesión'}
             </button>
 
             {mensaje && (
@@ -125,19 +111,15 @@ export default function LoginPage() {
                 {mensaje}
               </div>
             )}
-          </form>
 
-          {/* Debug display */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="mt-4 p-2 border border-gray-300 text-xs bg-gray-50">
-              <p>Debug info - current authentication state:</p>
-              <pre>{user ? `Logged in as: ${user.email} (${user.rol})` : 'Not logged in'}</pre>
+            <div className="text-center text-sm text-[#436E6C]">
+              <Link href="/registro" className="hover:text-[#5A9A98] transition-colors duration-300">
+                ¿No tienes una cuenta? Regístrate
+              </Link>
             </div>
-          )}
+          </form>
         </div>
       </main>
-
-      <Footer />
     </>
   );
 }

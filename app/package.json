@@ -7,13 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-<<<<<<< HEAD
     "dev:api": "nodemon index.js",
     "lint": "next lint",
     "create-admin": "ts-node src/scripts/createAdmin.ts"
-=======
-    "dev:api": "nodemon index.js"
->>>>>>> origin/feature/adminpage
   },
   "dependencies": {
     "@auth/core": "^0.34.2",
@@ -21,10 +17,7 @@
     "@fontsource/amiri": "^5.2.5",
     "@fontsource/roboto": "^5.2.5",
     "@heroicons/react": "^2.2.0",
-<<<<<<< HEAD
     "@hookform/resolvers": "^5.0.1",
-=======
->>>>>>> origin/feature/adminpage
     "@types/react-datepicker": "^6.2.0",
     "bcryptjs": "^3.0.2",
     "date-fns": "^4.1.0",
@@ -32,10 +25,7 @@
     "framer-motion": "^12.9.1",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.488.0",
-<<<<<<< HEAD
     "mongodb": "^6.16.0",
-=======
->>>>>>> origin/feature/adminpage
     "mongoose": "^8.14.1",
     "next": "latest",
     "next-auth": "^4.24.11",
@@ -44,13 +34,14 @@
     "react-datepicker": "^8.3.0",
     "react-dom": "latest",
     "react-hot-toast": "^2.5.2",
-<<<<<<< HEAD
     "react-icons": "^5.5.0",
+    "sharp": "^0.33.2",
     "zod": "^3.24.4"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
     "@types/bcryptjs": "^2.4.6",
+    "@types/formidable": "^3.4.5",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.14.1",
     "@types/nodemailer": "^6.4.17",
@@ -61,18 +52,5 @@
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
-=======
-    "react-icons": "^5.5.0"
-  },
-  "devDependencies": {
-    "@types/mongoose": "^5.11.96",
-    "@types/node": "22.14.1",
-    "@types/react": "19.1.2",
-    "autoprefixer": "^10.4.14",
-    "nodemon": "^3.1.10",
-    "postcss": "^8.4.21",
-    "tailwindcss": "^3.3.2",
-    "typescript": "^5.0.0"
->>>>>>> origin/feature/adminpage
   }
 }

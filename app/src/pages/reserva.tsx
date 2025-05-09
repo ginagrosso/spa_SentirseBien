@@ -1,49 +1,51 @@
 // src/pages/reserva.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import TurnosLayout from '../components/turnos/TurnosLayout';
 import TurnoForm from '../components/turnos/TurnoForm';
+import { toast } from 'react-hot-toast';
+import servicios from '@/data/servicios';
+import { IProfessional } from '@/types/professional';
 
-// Define proper type for the form data
-interface TurnoFormData {
-    userId: string;
-    serviceId: string;
-    date: string;
+interface Service {
+  _id: string;
+  name: string;
+  duration: number;
+  price: number;
 }
 
 export default function ReservaPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [professionals, setProfessionals] = useState<IProfessional[]>([]);
 
-    const handleNuevoTurnoAction = async (formData: TurnoFormData) => {
-        setIsLoading(true);
-        setError(null);
+    // Obtener todos los servicios de todas las categorías
+    const services: Service[] = servicios.reduce((acc: Service[], categoria) => {
+        const categoriaServices = categoria.services.map(servicio => ({
+            _id: servicio.name,
+            name: servicio.name,
+            price: parseInt(servicio.price.replace('$', '')),
+            duration: 60 // Duración por defecto de 60 minutos
+        }));
+        return [...acc, ...categoriaServices];
+    }, []);
 
-        try {
-            const response = await fetch('/api/reservas', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Error al crear la reserva');
+    useEffect(() => {
+        // Obtener profesionales al cargar la página
+        const fetchProfesionales = async () => {
+            try {
+                const res = await fetch('/api/profesionales');
+                const data = await res.json();
+                setProfessionals(data);
+            } catch (error) {
+                toast.error('Error al cargar profesionales');
             }
-
-            router.push('/turnos');
-        } catch (error) {
-            console.error('Error al reservar turno:', error);
-            setError(error instanceof Error ? error.message : 'Ocurrió un error al procesar la reserva');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        };
+        fetchProfesionales();
+    }, []);
 
     return (
         <TurnosLayout
@@ -56,7 +58,8 @@ export default function ReservaPage() {
                 </div>
             )}
             <TurnoForm
-                onCreateAction={handleNuevoTurnoAction}
+                services={services}
+                professionals={professionals}
             />
         </TurnosLayout>
     );

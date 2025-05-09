@@ -1,12 +1,23 @@
-import NextAuth from 'next-auth';
+import NextAuth, { DefaultSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
-import { User } from '@/models/User';
+import { UserModel } from '@/models/User';
 import dbConnect from '@/lib/dbConnect';
 
 declare module 'next-auth/jwt' {
     interface JWT {
-        role: 'user' | 'admin';
+        rol: 'user' | 'admin';
+    }
+}
+
+declare module 'next-auth' {
+    interface User {
+        rol: 'user' | 'admin';
+    }
+    interface Session {
+        user: {
+            rol: 'user' | 'admin';
+        } & DefaultSession['user']
     }
 }
 
@@ -24,28 +35,29 @@ export default NextAuth({
                 }
 
                 try {
-                    // Ensure MongoDB connection is established
                     await dbConnect();
                     
                     console.log('Searching for user with email:', credentials.email);
-                    const user = await User.findOne({ email: credentials.email });
-                    console.log('User found:', !!user);
+                    const user = await UserModel.findOne({ email: credentials.email });
+                    console.log('User found:', user);
 
                     if (!user) {
                         throw new Error('No existe una cuenta con este email');
                     }
 
-                    const isValid = await compare(credentials.password, user.password);
+                    const isValid = await user.comparePassword(credentials.password);
 
                     if (!isValid) {
                         throw new Error('Contraseña incorrecta');
                     }
 
+                    console.log('User role:', user.rol);
+
                     return {
-                        id: user._id.toString(),
+                        id: user._id?.toString() || '',
                         email: user.email,
-                        name: user.name,
-                        role: user.role
+                        nombre: user.nombre,
+                        rol: user.rol as 'user' | 'admin'
                     };
                 } catch (error) {
                     console.error('Authentication error:', error);
@@ -60,13 +72,15 @@ export default NextAuth({
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                (token as any).role = (user as any).role;
+                console.log('Setting role in JWT:', user.rol);
+                token.rol = user.rol;
             }
             return token;
         },
         async session({ session, token }) {
             if (session?.user) {
-                (session.user as any).role = token.role;
+                console.log('Setting role in session:', token.rol);
+                session.user.rol = token.rol;
             }
             return session;
         }

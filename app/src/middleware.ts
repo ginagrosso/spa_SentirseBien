@@ -7,8 +7,12 @@ export default withAuth(
         const token = req.nextauth.token;
         const path = req.nextUrl.pathname;
 
+        console.log('Middleware - Token:', token);
+        console.log('Middleware - Path:', path);
+
         // Rutas que requieren rol de admin
-        if (path.startsWith('/admin') && token?.role !== 'admin') {
+        if (path.startsWith('/admin') && token?.rol !== 'admin') {
+            console.log('Middleware - Access denied: Not admin');
             return NextResponse.redirect(new URL('/', req.url));
         }
 

@@ -12,11 +12,8 @@ interface HeaderProps {
 }
 
 export default function Header({ transparent = true }: HeaderProps) {
-<<<<<<< HEAD
-  const { user, isAuthenticated, logout, isAdmin } = useAuth();
-=======
+  const { logout, isAuthenticated, isAdmin } = useAuth();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
->>>>>>> origin/feature/adminpage
   const [showMenu, setShowMenu] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

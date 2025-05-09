@@ -4,21 +4,27 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { IService } from '../models/Service';
+
+interface IServiceDisplay {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  duration: number;
+  category: string;
+  imageUrl: string;
+  available: boolean;
+}
 
 interface ServiciosProps {
-  services: IService[] | undefined;
+  services: IServiceDisplay[];
 }
 
 export default function Servicios({ services }: ServiciosProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 100000 });
 
-<<<<<<< HEAD
   // ✅ Validación: si services es undefined o no es array, mostramos mensaje de error
-=======
-  
->>>>>>> origin/feature/adminpage
   if (!services || !Array.isArray(services)) {
     return (
       <div className="text-center mt-10 text-red-500">
@@ -27,28 +33,11 @@ export default function Servicios({ services }: ServiciosProps) {
     );
   }
 
-<<<<<<< HEAD
-  // ✅ Agrupar servicios por categoría
-  const servicesGroupedByCategory = services.reduce((acc: Record<string, IService[]>, service) => {
-    if (!acc[service.category]) acc[service.category] = [];
-    acc[service.category].push(service);
-    return acc;
-  }, {});
-
-  // ✅ Aplicar filtro por categoría y rango de precio
-  const filtered = Object.entries(servicesGroupedByCategory).map(([category, items]) => ({
-    category,
-    services: items.filter(service => {
-      const price = service.price;
-      return (!selectedCategory || selectedCategory === category) &&
-             price >= priceRange.min &&
-             price <= priceRange.max;
-=======
   console.log('Todos los servicios recibidos:', services);
   const categoriasUnicas = Array.from(new Set(services.map(s => s.category))).filter(Boolean);
   console.log('Categorías únicas encontradas:', categoriasUnicas);
 
-  const servicesGroupedByCategory = services.reduce((acc: Record<string, IService[]>, service) => {
+  const servicesGroupedByCategory = services.reduce((acc: Record<string, IServiceDisplay[]>, service) => {
     const category = service.category.trim();
     console.log('Procesando servicio:', service.name, 'con categoría:', category);
     if (!acc[category]) acc[category] = [];
@@ -66,7 +55,6 @@ export default function Servicios({ services }: ServiciosProps) {
       const matchesCategory = !selectedCategory || selectedCategory === category;
       const matchesPrice = !isNaN(price) && price >= priceRange.min && price <= priceRange.max;
       return matchesCategory && matchesPrice;
->>>>>>> origin/feature/adminpage
     }),
   }));
 
@@ -76,18 +64,6 @@ export default function Servicios({ services }: ServiciosProps) {
     <main className="relative min-h-screen font-roboto">
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex flex-col md:flex-row gap-8">
-
-<<<<<<< HEAD
-          {/* FILTROS */}
-          <div className="md:w-64 w-full bg-white/80 rounded-xl shadow-lg p-6 h-fit backdrop-blur-sm border border-accent/20">
-            <h3 className="text-lg font-lora font-semibold mb-4 text-primary">Filtrar por</h3>
-
-            {/* Categorías */}
-            <div className="mb-6">
-              <h4 className="text-sm font-medium text-primary/80 mb-2">Categoría</h4>
-              <div className="space-y-2">
-                {Object.keys(servicesGroupedByCategory).map(category => (
-=======
 
           <div className="md:w-64 w-full bg-white/80 rounded-xl shadow-lg p-6 h-fit backdrop-blur-sm border border-accent/20">
             <div className="flex justify-between items-center mb-4">
@@ -109,7 +85,6 @@ export default function Servicios({ services }: ServiciosProps) {
               <h4 className="text-sm font-medium text-primary/80 mb-2">Categoría</h4>
               <div className="space-y-2">
                 {categoriasUnicas.map(category => (
->>>>>>> origin/feature/adminpage
                   <label key={category} className="flex items-center space-x-2 cursor-pointer group">
                     <input
                       type="radio"
@@ -126,33 +101,20 @@ export default function Servicios({ services }: ServiciosProps) {
               </div>
             </div>
 
-<<<<<<< HEAD
-            {/* Rango de precio */}
-=======
->>>>>>> origin/feature/adminpage
             <div>
               <h4 className="text-sm font-medium text-primary/80 mb-2">Rango de Precio</h4>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between text-sm">
-                  <span>${priceRange.min}</span>
-                  <span>${priceRange.max}</span>
-                </div>
+              <div className="space-y-2">
                 <input
                   type="range"
                   min="0"
-<<<<<<< HEAD
-                  max="50000"
-=======
                   max="100000"
->>>>>>> origin/feature/adminpage
                   step="1000"
                   value={priceRange.max}
-                  onChange={(e) => setPriceRange({ ...priceRange, max: parseInt(e.target.value) })}
-                  className="w-full accent-accent"
+                  onChange={(e) => setPriceRange(prev => ({ ...prev, max: Number(e.target.value) }))}
+                  className="w-full"
+                  title="Rango de precio máximo"
                 />
               </div>
-<<<<<<< HEAD
-=======
             </div>
           </div>
 
@@ -208,54 +170,6 @@ export default function Servicios({ services }: ServiciosProps) {
                     </motion.div>
                   );
                 })
-              )}
->>>>>>> origin/feature/adminpage
-            </div>
-          </div>
-
-          {/* Resultados */}
-          <div className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filtered.flatMap(({ category, services }) =>
-                services.map((service, idx) => (
-                  <motion.div
-                    key={`${category}-${idx}`}
-                    className="relative rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: idx * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <div className="absolute inset-0">
-                      <Image src={service.image} alt={service.name} fill className="object-cover" />
-                    </div>
-
-                    <div className="relative h-full flex flex-col">
-                      <div className="w-full h-40 relative">
-                        <div className="absolute inset-0 bg-black/20"></div>
-                      </div>
-
-                      <div className="flex-1 flex flex-col justify-between p-4 bg-white/80">
-                        <div>
-                          <div className="flex justify-between items-start mb-2">
-                            <h4 className="text-lg font-lora font-bold">{service.name}</h4>
-                            <span className="bg-accent/30 text-primary text-base font-semibold px-3 py-1.5 rounded-full border border-accent/30">
-                              ${service.price}
-                            </span>
-                          </div>
-                          <p className="text-sm text-primary/80 mb-3 line-clamp-2">{service.description}</p>
-                        </div>
-                        <div className="flex justify-end">
-                          <Link href="/reserva">
-                            <button className="bg-primary text-white px-5 py-2 rounded-lg hover:bg-primary/90 transition-all text-sm font-medium">
-                              Reservar
-                            </button>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))
               )}
             </div>
           </div>

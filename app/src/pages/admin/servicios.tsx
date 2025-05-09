@@ -87,25 +87,36 @@ export default function AdminServiciosPage() {
             name="price" type="number" value={form.price} onChange={handleChange}
             placeholder="Precio" required className="w-full border p-2 rounded"
           />
-          <input
-            name="image" type="file" accept="image/*" onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          />
-          <select
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            required
-            className="w-full border p-2 rounded"
-          >
-            <option value="">Seleccionar categoría</option>
-            <option value="Masajes">Masajes</option>
-            <option value="Belleza">Belleza</option>
-            <option value="Tratamientos Faciales">Tratamientos Faciales</option>
-            <option value="Tratamientos Corporales">Tratamientos Corporales</option>
-            <option value="Servicios Grupales">Servicios Grupales</option>
-          </select>
+          <div>
+            <label htmlFor="image" className="block mb-2">Imagen del servicio</label>
+            <input
+              id="image"
+              name="image" 
+              type="file" 
+              accept="image/*" 
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="category" className="block mb-2">Categoría</label>
+            <select
+              id="category"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              required
+              className="w-full border p-2 rounded"
+            >
+              <option value="">Seleccionar categoría</option>
+              <option value="Masajes">Masajes</option>
+              <option value="Belleza">Belleza</option>
+              <option value="Tratamientos Faciales">Tratamientos Faciales</option>
+              <option value="Tratamientos Corporales">Tratamientos Corporales</option>
+              <option value="Servicios Grupales">Servicios Grupales</option>
+            </select>
+          </div>
           <button
             disabled={loading}
             className="bg-[#436E6C] text-white px-4 py-2 rounded hover:bg-[#365854]"

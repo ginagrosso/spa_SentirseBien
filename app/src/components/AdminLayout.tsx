@@ -53,7 +53,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="flex min-h-screen bg-[#F5F9F8]">
-
       <motion.aside
         initial={{ width: 0 }}
         animate={{ width: isSidebarOpen ? 280 : 80 }}
@@ -84,12 +83,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            title={isSidebarOpen ? "Cerrar menú" : "Abrir menú"}
           >
             <FiMenu size={20} />
           </button>
         </div>
 
-        <nav className="mt-8 px-4">
+        <nav className="px-4 py-4">
           {menuItems.map((item) => (
             <motion.button
               key={item.path}
@@ -139,7 +139,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </motion.button>
       </motion.aside>
 
-      <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-[280px]' : 'ml-[80px]'}`}>
+      <main className="flex-1 ml-[280px]">
         <AdminHeader />
         <div className="p-8">
           <motion.div

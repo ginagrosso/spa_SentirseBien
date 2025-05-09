@@ -17,7 +17,7 @@ export default function AdminHeader() {
       <div className="px-8 py-4 flex items-center justify-between">
         <h2 className="text-xl font-semibold text-[#436E6C]">Panel de Administración</h2>
         <div className="flex items-center gap-4">
-          <button className="p-2 hover:bg-[#F5F9F8] rounded-lg transition-colors relative text-[#436E6C]">
+          <button type="button" title="Notificaciones" className="p-2 hover:bg-[#F5F9F8] rounded-lg transition-colors relative text-[#436E6C]">
             <Bell size={20} />
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>

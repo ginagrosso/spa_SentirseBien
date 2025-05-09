@@ -88,6 +88,7 @@ export default function ServicioModal({ isOpen, onClose, servicio, onSave }: Ser
               <button
                 onClick={onClose}
                 className="text-gray-500 hover:text-gray-700"
+                title="Cerrar modal"
               >
                 <FiX size={24} />
               </button>
@@ -102,6 +103,8 @@ export default function ServicioModal({ isOpen, onClose, servicio, onSave }: Ser
                   onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#436E6C] focus:ring-[#436E6C]"
                   required
+                  title="Nombre del servicio"
+                  placeholder="Ingrese el nombre del servicio"
                 />
               </div>
 
@@ -113,6 +116,8 @@ export default function ServicioModal({ isOpen, onClose, servicio, onSave }: Ser
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#436E6C] focus:ring-[#436E6C]"
                   rows={3}
                   required
+                  title="Descripción del servicio"
+                  placeholder="Ingrese la descripción del servicio"
                 />
               </div>
 
@@ -124,6 +129,8 @@ export default function ServicioModal({ isOpen, onClose, servicio, onSave }: Ser
                   onChange={(e) => setFormData({ ...formData, precio: e.target.value })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#436E6C] focus:ring-[#436E6C]"
                   required
+                  title="Precio del servicio"
+                  placeholder="Ingrese el precio"
                 />
               </div>
 
@@ -135,6 +142,8 @@ export default function ServicioModal({ isOpen, onClose, servicio, onSave }: Ser
                   onChange={(e) => setFormData({ ...formData, duracion: e.target.value })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#436E6C] focus:ring-[#436E6C]"
                   required
+                  title="Duración del servicio en minutos"
+                  placeholder="Ingrese la duración en minutos"
                 />
               </div>
 
@@ -145,6 +154,7 @@ export default function ServicioModal({ isOpen, onClose, servicio, onSave }: Ser
                   onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#436E6C] focus:ring-[#436E6C]"
                   required
+                  title="Categoría del servicio"
                 >
                   <option value="">Seleccionar categoría</option>
                   <option value="Masajes">Masajes</option>
@@ -163,6 +173,8 @@ export default function ServicioModal({ isOpen, onClose, servicio, onSave }: Ser
                   onChange={(e) => setFormData({ ...formData, imagen: e.target.value })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#436E6C] focus:ring-[#436E6C]"
                   required
+                  title="URL de la imagen del servicio"
+                  placeholder="Ingrese la URL de la imagen"
                 />
               </div>
 
